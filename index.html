@@ -7,8 +7,10 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 </head>
 <body>
+    <div id="particles-js"></div>
     <nav class="navbar">
         <div class="container nav-container">
             <div class="logo">
@@ -34,9 +36,15 @@
                     <h1>Hello there! 👋 I'm <span class="highlight">Justin</span></h1>
                     <h2>Software Engineer & Developer</h2>
                     <p class="tagline">Transforming complex problems into elegant, scalable solutions</p>
+                    <div class="cta-buttons">
+                        <a href="#projects" class="primary-btn">View Projects</a>
+                        <a href="#contact" class="secondary-btn">Contact Me</a>
+                    </div>
                     <div class="socials">
                         <a href="mailto:6639835@gmail.com" class="social-icon"><i class="fas fa-envelope"></i></a>
                         <a href="https://github.com/6639835" class="social-icon"><i class="fab fa-github"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
                     </div>
                 </div>
             </div>
@@ -143,14 +151,64 @@
                     </div>
                 </div>
             </div>
+            
+            <div class="skills-category">
+                <h3>Skills Progress</h3>
+                <div class="skills-progress">
+                    <div class="progress-item">
+                        <div class="progress-info">
+                            <h4>Frontend Development</h4>
+                            <div class="progress-percentage">90%</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-value" style="width: 90%"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-info">
+                            <h4>Backend Development</h4>
+                            <div class="progress-percentage">85%</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-value" style="width: 85%"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-info">
+                            <h4>DevOps & Cloud</h4>
+                            <div class="progress-percentage">75%</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-value" style="width: 75%"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-info">
+                            <h4>Machine Learning</h4>
+                            <div class="progress-percentage">70%</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-value" style="width: 70%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
     <section id="projects" class="section">
         <div class="container">
             <h2 class="section-title">Featured Projects 🔥</h2>
+            
+            <div class="project-filter">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="aviation">Aviation</button>
+                <button class="filter-btn" data-filter="data">Data Processing</button>
+                <button class="filter-btn" data-filter="web">Web Development</button>
+            </div>
+            
             <div class="projects-grid">
-                <div class="project-card">
+                <div class="project-card" data-category="aviation data">
                     <div class="project-image">
                         <img src="https://via.placeholder.com/600x340/0a192f/64ffda?text=VOR-FIX-CALCULATION" alt="VOR-FIX-CALCULATION Project" />
                     </div>
@@ -177,7 +235,7 @@
                     </div>
                 </div>
                 
-                <div class="project-card">
+                <div class="project-card" data-category="aviation data">
                     <div class="project-image">
                         <img src="https://via.placeholder.com/600x340/0a192f/64ffda?text=X-Plane-Airway-Filter" alt="X-Plane-Airway-Filter Project" />
                     </div>
@@ -203,6 +261,37 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- New Web Development Project -->
+                <div class="project-card" data-category="web">
+                    <div class="project-image">
+                        <img src="https://via.placeholder.com/600x340/0a192f/64ffda?text=Personal+Portfolio" alt="Personal Portfolio Project" />
+                    </div>
+                    <div class="project-content">
+                        <div class="project-header">
+                            <h3>Personal Portfolio 💼</h3>
+                            <div class="project-links">
+                                <a href="#" target="_blank" aria-label="Live Demo">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                                <a href="#" target="_blank" aria-label="GitHub Repository">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <p class="project-desc">Modern Developer Portfolio</p>
+                        <ul class="project-features">
+                            <li>Responsive design with modern UI/UX principles</li>
+                            <li>Animated elements and smooth transitions</li>
+                            <li><strong>Technologies:</strong> HTML, CSS, JavaScript</li>
+                        </ul>
+                        <div class="project-tags">
+                            <span class="tag">HTML5</span>
+                            <span class="tag">CSS3</span>
+                            <span class="tag">JavaScript</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -222,6 +311,24 @@
     <section id="contact" class="section">
         <div class="container">
             <h2 class="section-title">Connect With Me 🤝</h2>
+            <div class="contact-form-container">
+                <form id="contact-form" class="contact-form">
+                    <div class="form-group">
+                        <input type="text" id="name" placeholder="Your Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="email" placeholder="Your Email" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="subject" placeholder="Subject">
+                    </div>
+                    <div class="form-group">
+                        <textarea id="message" placeholder="Your Message" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Send Message <i class="fas fa-paper-plane"></i></button>
+                </form>
+                <div id="form-message" class="form-message"></div>
+            </div>
             <div class="contact-links">
                 <a href="mailto:6639835@gmail.com" class="contact-button">
                     <i class="fas fa-envelope"></i> Email
