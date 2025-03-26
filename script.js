@@ -399,37 +399,19 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (contactForm) {
         contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
+            // We don't prevent default anymore, since we want the form to submit to Web3Forms
+            // But we'll add a loading state
             
-            // Get form data
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const subject = document.getElementById('subject').value;
-            const message = document.getElementById('message').value;
-            
-            // Simple validation
-            if (!name || !email || !message) {
-                formMessage.textContent = 'Please fill all required fields.';
-                formMessage.className = 'form-message error';
-                return;
-            }
-            
-            // Simulate form submission (in a real app, you'd send data to a server)
+            // Display loading message
             formMessage.textContent = 'Sending...';
             formMessage.className = 'form-message';
             
-            // Simulate success after delay (replace with actual form submission in production)
-            setTimeout(() => {
-                formMessage.textContent = 'Message sent successfully! I\'ll be in touch soon.';
-                formMessage.className = 'form-message success';
-                contactForm.reset();
-                
-                // Clear success message after some time
-                setTimeout(() => {
-                    formMessage.textContent = '';
-                    formMessage.className = 'form-message';
-                }, 5000);
-            }, 1500);
+            // Web3Forms will handle the submission and redirect to the success page
+            // But if there's an error, we should let the user know
+            window.addEventListener('error', function() {
+                formMessage.textContent = 'Something went wrong! Please try again.';
+                formMessage.className = 'form-message error';
+            });
         });
     }
     
