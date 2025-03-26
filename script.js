@@ -399,18 +399,44 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (contactForm) {
         contactForm.addEventListener('submit', function(e) {
-            // We don't prevent default anymore, since we want the form to submit to Web3Forms
-            // But we'll add a loading state
+            e.preventDefault(); // Prevent the default form submission
             
             // Display loading message
             formMessage.textContent = 'Sending...';
             formMessage.className = 'form-message';
             
-            // Web3Forms will handle the submission and redirect to the success page
-            // But if there's an error, we should let the user know
-            window.addEventListener('error', function() {
-                formMessage.textContent = 'Something went wrong! Please try again.';
+            // Create FormData object
+            const formData = new FormData(contactForm);
+            
+            // Send data to Web3Forms using fetch API
+            fetch(contactForm.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Show success message
+                if (data.success) {
+                    formMessage.textContent = 'Message sent successfully! I\'ll be in touch soon.';
+                    formMessage.className = 'form-message success';
+                    contactForm.reset();
+                    
+                    // Clear success message after some time
+                    setTimeout(() => {
+                        formMessage.textContent = '';
+                        formMessage.className = 'form-message';
+                    }, 5000);
+                } else {
+                    // Show error message if submission failed
+                    formMessage.textContent = data.message || 'Something went wrong! Please try again.';
+                    formMessage.className = 'form-message error';
+                }
+            })
+            .catch(error => {
+                // Show error message
+                formMessage.textContent = 'Failed to send message. Please try again.';
                 formMessage.className = 'form-message error';
+                console.error('Error:', error);
             });
         });
     }
