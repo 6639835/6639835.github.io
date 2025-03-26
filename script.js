@@ -49,6 +49,82 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Theme Toggle Functionality
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    const htmlElement = document.documentElement;
+    
+    // Check for saved theme preference or use default
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    htmlElement.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+    
+    // Toggle theme
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            htmlElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            updateThemeIcon(newTheme);
+            
+            // Add animation to the body
+            document.body.classList.add('theme-transition');
+            setTimeout(() => {
+                document.body.classList.remove('theme-transition');
+            }, 1000);
+        });
+    }
+    
+    // Update theme icon
+    function updateThemeIcon(theme) {
+        if (!themeIcon) return;
+        
+        if (theme === 'dark') {
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
+        } else {
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+        }
+    }
+    
+    // Back to Top Button
+    const backToTopButton = document.getElementById('back-to-top');
+    
+    if (backToTopButton) {
+        // Show/hide the button based on scroll position
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTopButton.classList.add('visible');
+            } else {
+                backToTopButton.classList.remove('visible');
+            }
+        });
+        
+        // Scroll to top when clicked
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    }
+
+    // Navbar Scroll Effect
+    const navbar = document.querySelector('.navbar');
+    if (navbar) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    }
+
     // Add fade-in animation to sections
     const sections = document.querySelectorAll('.section');
     
@@ -126,9 +202,25 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Add skill progress animation
+    // Enhanced skill cards interaction
     const skillCards = document.querySelectorAll('.skill-card');
     skillCards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            card.style.backgroundColor = 'var(--secondary)';
+            const icon = card.querySelector('i');
+            if (icon) icon.style.transform = 'scale(1.2)';
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            card.style.backgroundColor = 'var(--card-bg)';
+            const icon = card.querySelector('i');
+            if (icon) icon.style.transform = 'scale(1)';
+        });
+    });
+    
+    // Enhance project cards
+    const projectCards = document.querySelectorAll('.project-card');
+    projectCards.forEach(card => {
         card.addEventListener('mouseenter', () => {
             card.style.backgroundColor = 'var(--secondary)';
         });
@@ -137,6 +229,25 @@ document.addEventListener('DOMContentLoaded', () => {
             card.style.backgroundColor = 'var(--card-bg)';
         });
     });
+    
+    // Add typing effect to the tagline
+    const tagline = document.querySelector('.tagline');
+    if (tagline && tagline.textContent) {
+        const text = tagline.textContent;
+        tagline.textContent = '';
+        let i = 0;
+        
+        function typeWriter() {
+            if (i < text.length) {
+                tagline.textContent += text.charAt(i);
+                i++;
+                setTimeout(typeWriter, 50);
+            }
+        }
+        
+        // Start typing effect after a delay
+        setTimeout(typeWriter, 1500);
+    }
     
     // Initialize GitHub stats with loading animation
     const githubStats = document.querySelector('.github-stats');
