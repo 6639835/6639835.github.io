@@ -1,18 +1,53 @@
 // Wait for DOM to fully load
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize particles.js
+    // Detect mobile devices for better experience
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+        // Remove particles.js on mobile for better performance
+        const particlesContainer = document.getElementById('particles-js');
+        if (particlesContainer) {
+            particlesContainer.style.display = 'none';
+        }
+        
+        // Add mobile class to body for specific mobile styling
+        document.body.classList.add('mobile-device');
+        
+        // Ensure cursor is visible on mobile
+        document.body.style.cursor = 'auto';
+    } else {
+        // Initialize particles on desktop only
+        initializeParticles();
+        
+        // Setup custom cursor on desktop
+        setupCustomCursor();
+    }
+
+    // Add a loading animation while the page initializes
+    const body = document.body;
+    body.classList.add('loading');
+    
+    // Remove loading class after a short delay
+    setTimeout(() => {
+        body.classList.remove('loading');
+    }, 1000);
+
+    // Initialize particles.js with enhanced configuration
     if (typeof particlesJS !== 'undefined') {
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+        const particleColor = currentTheme === 'dark' ? '#64ffda' : '#0a9e88';
+        
         particlesJS('particles-js', {
             particles: {
                 number: {
-                    value: 80,
+                    value: 60,
                     density: {
                         enable: true,
-                        value_area: 800
+                        value_area: 900
                     }
                 },
                 color: {
-                    value: '#64ffda'
+                    value: particleColor
                 },
                 shape: {
                     type: 'circle',
@@ -26,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     random: true,
                     anim: {
                         enable: true,
-                        speed: 1,
+                        speed: 0.8,
                         opacity_min: 0.1,
                         sync: false
                     }
@@ -44,13 +79,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 line_linked: {
                     enable: true,
                     distance: 150,
-                    color: '#64ffda',
-                    opacity: 0.1,
+                    color: particleColor,
+                    opacity: 0.15,
                     width: 1
                 },
                 move: {
                     enable: true,
-                    speed: 1,
+                    speed: 0.8,
                     direction: 'none',
                     random: true,
                     straight: false,
@@ -78,13 +113,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 modes: {
                     grab: {
-                        distance: 140,
+                        distance: 180,
                         line_linked: {
-                            opacity: 0.5
+                            opacity: 0.6
                         }
                     },
                     push: {
-                        particles_nb: 3
+                        particles_nb: 4
                     }
                 }
             },
@@ -264,7 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // Scroll to section smoothly when clicking on nav links
+    // Enhanced Scroll to section smoothly when clicking on nav links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             e.preventDefault();
@@ -273,13 +308,87 @@ document.addEventListener('DOMContentLoaded', () => {
             const targetElement = document.querySelector(targetId);
             
             if (targetElement) {
-                targetElement.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
+                // Add a highlight effect to the target section
+                targetElement.classList.add('section-highlight');
+                
+                // Scroll with enhanced easing
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80, // Adjust for navbar height
+                    behavior: 'smooth'
                 });
+                
+                // Remove highlight after scrolling completes
+                setTimeout(() => {
+                    targetElement.classList.remove('section-highlight');
+                }, 1500);
+                
+                // Update URL without page reload (for better UX)
+                history.pushState(null, null, targetId);
             }
         });
     });
+    
+    // Add a more advanced intersection observer for sections
+    const allSections = document.querySelectorAll('.section');
+    
+    // Configure Intersection Observer with options
+    const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                // Add visible class
+                entry.target.classList.add('section-visible');
+                
+                // Animate skill bars if this is the skills section
+                if (entry.target.id === 'skills') {
+                    animateSkillBars();
+                }
+                
+                // Unobserve once animation is applied
+                sectionObserver.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.15,
+        rootMargin: '0px 0px -10% 0px'
+    });
+    
+    // Observe all sections
+    allSections.forEach(section => {
+        // Set initial state
+        section.classList.add('section-hidden');
+        sectionObserver.observe(section);
+    });
+    
+    // Make the first section visible immediately without animation
+    if (allSections.length > 0) {
+        allSections[0].classList.remove('section-hidden');
+        allSections[0].classList.add('section-visible');
+    }
+    
+    // Function to animate skill bars
+    function animateSkillBars() {
+        const progressBars = document.querySelectorAll('.progress-value');
+        const progressPercentages = document.querySelectorAll('.progress-percentage');
+        
+        // Animate each bar from 0 to target width
+        progressBars.forEach((bar, index) => {
+            const width = bar.style.width;
+            const percentValue = parseInt(width);
+            
+            // Reset width to 0
+            bar.style.width = '0%';
+            
+            // Animate to target width
+            setTimeout(() => {
+                bar.style.width = width;
+                
+                // Also animate the counter
+                if (progressPercentages[index]) {
+                    animateCounter(progressPercentages[index], percentValue);
+                }
+            }, 200);
+        });
+    }
     
     // Add CSS class to handle faded in elements
     const style = document.createElement('style');
@@ -349,96 +458,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         requestAnimationFrame(updateCounter);
-    }
-    
-    // Intersection Observer for progress bars
-    const progressObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                // Get all progress bars and percentages in this section
-                const section = entry.target;
-                const bars = section.querySelectorAll('.progress-value');
-                const percentages = section.querySelectorAll('.progress-percentage');
-                
-                // Animate each progress bar and counter
-                bars.forEach((bar, index) => {
-                    const width = bar.style.width;
-                    const percentValue = parseInt(width);
-                    
-                    // Reset the width to 0 before animation
-                    bar.style.width = '0%';
-                    
-                    // After a small delay, animate to the target width
-                    setTimeout(() => {
-                        bar.style.width = width;
-                        
-                        // Also animate the counter if available
-                        if (percentages[index]) {
-                            animateCounter(percentages[index], percentValue);
-                        }
-                    }, 200);
-                });
-                
-                // Unobserve once animated
-                progressObserver.unobserve(section);
-            }
-        });
-    }, {
-        threshold: 0.2
-    });
-    
-    // Observe the skills section
-    const skillsSection = document.getElementById('skills');
-    if (skillsSection) {
-        progressObserver.observe(skillsSection);
-    }
-    
-    // Contact Form Handling
-    const contactForm = document.getElementById('contact-form');
-    const formMessage = document.getElementById('form-message');
-    
-    if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault(); // Prevent the default form submission
-            
-            // Display loading message
-            formMessage.textContent = 'Sending...';
-            formMessage.className = 'form-message';
-            
-            // Create FormData object
-            const formData = new FormData(contactForm);
-            
-            // Send data to Web3Forms using fetch API
-            fetch(contactForm.action, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Show success message
-                if (data.success) {
-                    formMessage.textContent = 'Message sent successfully! I\'ll be in touch soon.';
-                    formMessage.className = 'form-message success';
-                    contactForm.reset();
-                    
-                    // Clear success message after some time
-                    setTimeout(() => {
-                        formMessage.textContent = '';
-                        formMessage.className = 'form-message';
-                    }, 5000);
-                } else {
-                    // Show error message if submission failed
-                    formMessage.textContent = data.message || 'Something went wrong! Please try again.';
-                    formMessage.className = 'form-message error';
-                }
-            })
-            .catch(error => {
-                // Show error message
-                formMessage.textContent = 'Failed to send message. Please try again.';
-                formMessage.className = 'form-message error';
-                console.error('Error:', error);
-            });
-        });
     }
     
     // Project Card Hover Effects with 3D Tilt
@@ -655,5 +674,150 @@ document.addEventListener('DOMContentLoaded', () => {
             clearTimeout(timeout);
             timeout = setTimeout(func, wait);
         };
+    }
+
+    // Function to initialize particles
+    function initializeParticles() {
+        if (typeof particlesJS !== 'undefined') {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+            const particleColor = currentTheme === 'dark' ? '#64ffda' : '#0a9e88';
+            
+            particlesJS('particles-js', {
+                particles: {
+                    number: {
+                        value: 60,
+                        density: {
+                            enable: true,
+                            value_area: 900
+                        }
+                    },
+                    color: {
+                        value: particleColor
+                    },
+                    shape: {
+                        type: 'circle',
+                        stroke: {
+                            width: 0,
+                            color: '#000000'
+                        }
+                    },
+                    opacity: {
+                        value: 0.2,
+                        random: true,
+                        anim: {
+                            enable: true,
+                            speed: 0.8,
+                            opacity_min: 0.1,
+                            sync: false
+                        }
+                    },
+                    size: {
+                        value: 3,
+                        random: true,
+                        anim: {
+                            enable: true,
+                            speed: 2,
+                            size_min: 0.1,
+                            sync: false
+                        }
+                    },
+                    line_linked: {
+                        enable: true,
+                        distance: 150,
+                        color: particleColor,
+                        opacity: 0.15,
+                        width: 1
+                    },
+                    move: {
+                        enable: true,
+                        speed: 0.8,
+                        direction: 'none',
+                        random: true,
+                        straight: false,
+                        out_mode: 'out',
+                        bounce: false,
+                        attract: {
+                            enable: true,
+                            rotateX: 600,
+                            rotateY: 1200
+                        }
+                    }
+                },
+                interactivity: {
+                    detect_on: 'canvas',
+                    events: {
+                        onhover: {
+                            enable: true,
+                            mode: 'grab'
+                        },
+                        onclick: {
+                            enable: true,
+                            mode: 'push'
+                        },
+                        resize: true
+                    },
+                    modes: {
+                        grab: {
+                            distance: 180,
+                            line_linked: {
+                                opacity: 0.6
+                            }
+                        },
+                        push: {
+                            particles_nb: 4
+                        }
+                    }
+                },
+                retina_detect: true
+            });
+        }
+    }
+    
+    // Function to setup custom cursor
+    function setupCustomCursor() {
+        const cursor = document.querySelector('.custom-cursor') || document.createElement('div');
+        
+        if (!document.querySelector('.custom-cursor')) {
+            cursor.classList.add('custom-cursor');
+            document.body.appendChild(cursor);
+        }
+        
+        let cursorVisible = false;
+        
+        // Hide cursor when inactive
+        const mouseStopped = debounce(() => {
+            if (cursorVisible) {
+                cursor.style.opacity = '0';
+                cursorVisible = false;
+            }
+        }, 3000);
+        
+        // Track mouse movement
+        document.addEventListener('mousemove', e => {
+            const cursorX = e.clientX;
+            const cursorY = e.clientY;
+            
+            if (!cursorVisible) {
+                cursor.style.opacity = '1';
+                cursorVisible = true;
+            }
+            
+            cursor.style.transform = `translate(${cursorX}px, ${cursorY}px)`;
+            
+            mouseStopped();
+        });
+        
+        // Add hover effect for interactive elements
+        const interactiveElements = document.querySelectorAll('a, button, .project-card, .skill-card, .nav-toggle, .theme-toggle, .back-to-top');
+        
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseover', () => {
+                cursor.classList.add('cursor-hover');
+            });
+            
+            el.addEventListener('mouseleave', () => {
+                cursor.classList.remove('cursor-hover');
+            });
+        });
     }
 }); 
