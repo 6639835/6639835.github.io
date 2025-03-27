@@ -1,5 +1,16 @@
 // Wait for DOM to fully load
 document.addEventListener('DOMContentLoaded', () => {
+    // Handle preloader
+    const preloader = document.querySelector('.preloader');
+    
+    // Hide preloader after content loaded
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            preloader.classList.add('fade-out');
+            document.body.style.overflow = 'visible'; // Enable scrolling
+        }, 500);
+    });
+    
     // Detect mobile devices for better experience
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     
@@ -253,50 +264,63 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Navbar Scroll Effect
-    const navbar = document.querySelector('.navbar');
-    if (navbar) {
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 100) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-        });
-    }
-
-    // Add fade-in animation to sections
-    const sections = document.querySelectorAll('.section');
-    
-    // Intersection Observer for fade-in animation
+    // Enhanced scroll animations - reveal elements as they enter viewport
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.classList.add('fade-in');
-                observer.unobserve(entry.target);
+                entry.target.classList.add('section-visible');
+                entry.target.classList.remove('section-hidden');
+                
+                // Animate skill bars when skills section becomes visible
+                if (entry.target.id === 'skills') {
+                    setTimeout(() => {
+                        animateSkillBars();
+                    }, 300);
+                }
             }
         });
-    }, {
-        threshold: 0.1
+    }, { threshold: 0.1 });
+    
+    // Apply to all sections and project cards
+    document.querySelectorAll('.section, .project-card, .skill-card').forEach(element => {
+        element.classList.add('section-hidden');
+        observer.observe(element);
     });
     
-    // Make the first section (About Me) visible immediately
-    if (sections.length > 0) {
-        sections[0].style.opacity = '1';
-        sections[0].style.transform = 'translateY(0)';
-    }
-    
-    // Observe each section except the first one
-    sections.forEach((section, index) => {
-        // Apply initial styles
-        section.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-        
-        // Only set opacity to 0 for sections after the first one
-        if (index > 0) {
-            section.style.opacity = '0';
-            section.style.transform = 'translateY(20px)';
-            observer.observe(section);
+    // Add navbar scroll effect
+    const navbar = document.querySelector('.navbar');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
         }
+    });
+    
+    // Project filtering functionality
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const filter = button.getAttribute('data-filter');
+            
+            // Update active button
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            
+            // Filter projects
+            filterProjects(filter);
+        });
+    });
+    
+    // Add fade-in animation to sections
+    const sectionElements = document.querySelectorAll('.section');
+    sectionElements.forEach(section => {
+        section.classList.add('section-hidden');
+    });
+
+    // Use the existing observer instead of creating a new one
+    sectionElements.forEach(section => {
+        observer.observe(section);
     });
     
     // Enhanced Scroll to section smoothly when clicking on nav links
@@ -506,32 +530,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Project Filter Functionality
-    const filterBtns = document.querySelectorAll('.filter-btn');
-    const projectItems = document.querySelectorAll('.project-card');
-    
-    filterBtns.forEach(button => {
-        button.addEventListener('click', () => {
-            // Remove active class from all buttons
-            filterBtns.forEach(btn => btn.classList.remove('active'));
-            
-            // Add active class to clicked button
-            button.classList.add('active');
-            
-            // Get filter value
-            const filterValue = button.getAttribute('data-filter');
-            
-            // Show loading spinner
-            document.body.classList.add('loading');
-            
-            // Filter projects with delay for animation
-            setTimeout(() => {
-                filterProjects(filterValue);
-                document.body.classList.remove('loading');
-            }, 500);
-        });
-    });
-    
     function filterProjects(filter) {
+        const projectItems = document.querySelectorAll('.project-card');
+        
         projectItems.forEach(card => {
             const categories = card.getAttribute('data-category');
             
@@ -610,62 +611,6 @@ document.addEventListener('DOMContentLoaded', () => {
     loadingSpinner.className = 'loading-spinner';
     loadingSpinner.innerHTML = '<div class="spinner"></div>';
     document.body.appendChild(loadingSpinner);
-    
-    // Add custom cursor effect
-    const cursor = document.createElement('div');
-    cursor.classList.add('custom-cursor');
-    document.body.appendChild(cursor);
-    
-    let cursorVisible = false;
-    let cursorEnlarged = false;
-    
-    const endX = (window.innerWidth / 2);
-    const endY = (window.innerHeight / 2);
-    let cursorX = endX;
-    let cursorY = endY;
-    
-    const mouseStopped = debounce(() => {
-        if (cursorVisible) {
-            cursor.style.opacity = '0';
-            cursorVisible = false;
-        }
-    }, 5000);
-    
-    document.addEventListener('mousemove', e => {
-        cursorX = e.clientX;
-        cursorY = e.clientY;
-        
-        if (!cursorVisible) {
-            cursor.style.opacity = '1';
-            cursorVisible = true;
-        }
-        
-        cursor.style.top = `${cursorY}px`;
-        cursor.style.left = `${cursorX}px`;
-        
-        mouseStopped();
-    });
-    
-    document.addEventListener('mousedown', () => {
-        cursor.style.transform = 'scale(0.8)';
-    });
-    
-    document.addEventListener('mouseup', () => {
-        cursor.style.transform = 'scale(1)';
-    });
-    
-    // Add hover effect for custom cursor on interactive elements
-    const interactiveElements = document.querySelectorAll('a, button, .project-card, .skill-card, .nav-toggle, .theme-toggle, .back-to-top');
-    
-    interactiveElements.forEach(el => {
-        el.addEventListener('mouseover', () => {
-            cursor.classList.add('cursor-hover');
-        });
-        
-        el.addEventListener('mouseleave', () => {
-            cursor.classList.remove('cursor-hover');
-        });
-    });
     
     // Debounce function
     function debounce(func, wait) {
@@ -775,73 +720,199 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Function to setup custom cursor
     function setupCustomCursor() {
-        const cursor = document.querySelector('.custom-cursor') || document.createElement('div');
-        
-        if (!document.querySelector('.custom-cursor')) {
-            cursor.classList.add('custom-cursor');
-            document.body.appendChild(cursor);
+        // Create cursor elements if they don't exist
+        if (!document.querySelector('.cursor-dot')) {
+            const cursorDot = document.createElement('div');
+            cursorDot.classList.add('cursor-dot');
+            document.body.appendChild(cursorDot);
         }
         
-        let cursorVisible = false;
+        if (!document.querySelector('.cursor-outline')) {
+            const cursorOutline = document.createElement('div');
+            cursorOutline.classList.add('cursor-outline');
+            document.body.appendChild(cursorOutline);
+        }
         
-        // Hide cursor when inactive
-        const mouseStopped = debounce(() => {
-            if (cursorVisible) {
-                cursor.style.opacity = '0';
-                cursorVisible = false;
-            }
-        }, 5000);
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
+        
+        // Variables for cursor position
+        let mouseX = 0;
+        let mouseY = 0;
+        let outlineX = 0;
+        let outlineY = 0;
+        let isVisible = false;
         
         // Track mouse movement
-        document.addEventListener('mousemove', e => {
-            const cursorX = e.clientX;
-            const cursorY = e.clientY;
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
             
-            // Use requestAnimationFrame for smoother cursor movement
-            requestAnimationFrame(() => {
-                cursor.style.transform = `translate(${cursorX}px, ${cursorY}px)`;
-                
-                if (!cursorVisible) {
-                    cursor.style.opacity = '1';
-                    cursorVisible = true;
-                }
-            });
+            // Show cursor elements
+            if (!isVisible) {
+                isVisible = true;
+                cursorDot.style.opacity = '1';
+                cursorOutline.style.opacity = '0.5';
+            }
             
-            mouseStopped();
+            // Update dot position immediately
+            cursorDot.style.left = `${mouseX}px`;
+            cursorDot.style.top = `${mouseY}px`;
         });
         
-        // Add cursor style adjustments when theme changes
-        const themeToggle = document.getElementById('theme-toggle');
-        if (themeToggle) {
-            themeToggle.addEventListener('click', () => {
-                // Allow cursor to adjust to theme change
-                setTimeout(() => {
-                    const currentTheme = document.documentElement.getAttribute('data-theme');
-                    updateCursorForTheme(currentTheme);
-                }, 100);
-            });
+        // Animate outline with smooth following effect
+        function animateCursor() {
+            // Calculate smooth outline movement with easing
+            const easing = 8; // Higher = slower follow
+            outlineX += (mouseX - outlineX) / easing;
+            outlineY += (mouseY - outlineY) / easing;
+            
+            // Update outline position
+            cursorOutline.style.left = `${outlineX}px`;
+            cursorOutline.style.top = `${outlineY}px`;
+            
+            // Continue animation
+            requestAnimationFrame(animateCursor);
         }
         
-        // Initial cursor style based on current theme
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        updateCursorForTheme(currentTheme);
+        // Start animation
+        animateCursor();
         
-        // Update cursor style based on theme
-        function updateCursorForTheme(theme) {
-            // The CSS now handles theme-specific cursor styling
-        }
+        // Hide cursor when mouse leaves window
+        document.addEventListener('mouseout', () => {
+            cursorDot.style.opacity = '0';
+            cursorOutline.style.opacity = '0';
+            isVisible = false;
+        });
+        
+        // Show cursor when mouse enters window
+        document.addEventListener('mouseover', () => {
+            cursorDot.style.opacity = '1';
+            cursorOutline.style.opacity = '0.5';
+            isVisible = true;
+        });
         
         // Add hover effect for interactive elements
-        const interactiveElements = document.querySelectorAll('a, button, .project-card, .skill-card, .nav-toggle, .theme-toggle, .back-to-top');
+        const interactiveElements = document.querySelectorAll('a, button, .project-card, .skill-card, .nav-toggle, .theme-toggle, .back-to-top, input, textarea, .filter-btn');
         
         interactiveElements.forEach(el => {
-            el.addEventListener('mouseover', () => {
-                cursor.classList.add('cursor-hover');
+            el.addEventListener('mouseenter', () => {
+                cursorDot.classList.add('cursor-hover');
+                cursorOutline.classList.add('cursor-hover');
             });
             
             el.addEventListener('mouseleave', () => {
-                cursor.classList.remove('cursor-hover');
+                cursorDot.classList.remove('cursor-hover');
+                cursorOutline.classList.remove('cursor-hover');
             });
         });
+        
+        // Add click animation
+        document.addEventListener('mousedown', () => {
+            cursorDot.style.transform = 'translate(-50%, -50%) scale(0.7)';
+            cursorOutline.style.transform = 'translate(-50%, -50%) scale(0.7)';
+        });
+        
+        document.addEventListener('mouseup', () => {
+            cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
+            cursorOutline.style.transform = 'translate(-50%, -50%) scale(1)';
+        });
     }
+
+    // Improved contact form handling with validation and feedback
+    const contactForm = document.getElementById('contact-form');
+    const formMessage = document.getElementById('form-message');
+    
+    if (contactForm) {
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Basic form validation
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const message = document.getElementById('message').value.trim();
+            
+            if (!name || !email || !message) {
+                showFormMessage('Please fill out all required fields', 'error');
+                return;
+            }
+            
+            if (!isValidEmail(email)) {
+                showFormMessage('Please enter a valid email address', 'error');
+                return;
+            }
+            
+            try {
+                const formData = new FormData(contactForm);
+                const response = await fetch(contactForm.action, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    showFormMessage('Message sent successfully! I\'ll get back to you soon.', 'success');
+                    contactForm.reset();
+                } else {
+                    showFormMessage('Something went wrong. Please try again later.', 'error');
+                }
+            } catch (error) {
+                showFormMessage('An error occurred. Please try again later.', 'error');
+            }
+        });
+    }
+    
+    function showFormMessage(text, type) {
+        formMessage.textContent = text;
+        formMessage.className = 'form-message';
+        formMessage.classList.add(type);
+        
+        setTimeout(() => {
+            formMessage.classList.add('fade-out');
+            setTimeout(() => {
+                formMessage.textContent = '';
+                formMessage.className = 'form-message';
+            }, 500);
+        }, 5000);
+    }
+    
+    function isValidEmail(email) {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regex.test(email);
+    }
+
+    // Add smooth scroll behavior for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                // Close mobile menu if open
+                const navMenu = document.querySelector('.nav-menu');
+                if (navMenu && navMenu.classList.contains('active')) {
+                    navMenu.classList.remove('active');
+                    const icon = document.querySelector('.nav-toggle i');
+                    if (icon) {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                }
+                
+                // Add highlight effect to section
+                document.querySelectorAll('.section-highlight').forEach(el => {
+                    el.classList.remove('section-highlight');
+                });
+                
+                targetElement.classList.add('section-highlight');
+                
+                // Smooth scroll to target
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80, // Adjust for navbar height
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
 }); 

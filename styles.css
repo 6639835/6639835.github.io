@@ -271,6 +271,7 @@ header::before {
 .section-hidden {
     opacity: 0;
     transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
 .section-visible {
@@ -279,18 +280,18 @@ header::before {
 }
 
 .section-highlight {
-    animation: highlightSection 1.5s ease;
+    animation: highlightSection 1s ease;
 }
 
 @keyframes highlightSection {
     0% {
-        box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0);
+        box-shadow: 0 0 0 rgba(var(--accent-rgb), 0);
     }
     50% {
-        box-shadow: 0 0 30px 5px rgba(var(--accent-rgb), 0.3);
+        box-shadow: 0 0 20px rgba(var(--accent-rgb), 0.3);
     }
     100% {
-        box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0);
+        box-shadow: 0 0 0 rgba(var(--accent-rgb), 0);
     }
 }
 
@@ -327,7 +328,7 @@ header::before {
     border-radius: 12px;
     padding: 25px;
     text-align: center;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
     box-shadow: 0 10px 20px var(--shadow);
     border: 1px solid var(--border);
     position: relative;
@@ -337,19 +338,18 @@ header::before {
 .skill-card::before {
     content: '';
     position: absolute;
-    top: -10px;
-    left: -10px;
-    right: -10px;
-    bottom: -10px;
-    background: linear-gradient(135deg, var(--accent), transparent);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    border-radius: 12px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.2), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
     z-index: -1;
 }
 
 .skill-card:hover::before {
-    opacity: 0.1;
+    transform: translateX(0);
 }
 
 .skill-card:hover {
@@ -384,18 +384,20 @@ header::before {
 
 .project-card {
     background-color: var(--card-bg);
-    border-radius: 15px;
+    border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    transition: transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.5s ease, background-color 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative;
-    transform-style: preserve-3d;
     z-index: 1;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .project-card:hover {
-    transform: translateY(-10px) scale(1.02);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    transform: translateY(-15px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    border-color: var(--accent);
 }
 
 .card-glare {
@@ -664,6 +666,8 @@ footer {
 
 .navbar.scrolled {
     padding: 10px 0;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
 }
 
 .nav-container {
@@ -690,11 +694,23 @@ footer {
     padding: 8px 12px;
     border-radius: 5px;
     transition: all 0.3s ease;
+    position: relative;
+    padding-bottom: 5px;
 }
 
-.nav-menu li a:hover {
-    color: var(--accent);
-    background-color: rgba(97, 218, 251, 0.1);
+.nav-menu li a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: var(--accent);
+    transition: width 0.3s ease;
+}
+
+.nav-menu li a:hover::after {
+    width: 100%;
 }
 
 .nav-toggle {
@@ -1031,10 +1047,9 @@ footer {
 
 .form-group input:focus,
 .form-group textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.25);
     outline: none;
-    border-color: var(--input-focus);
-    box-shadow: 0 8px 16px rgba(var(--accent-rgb), 0.15);
-    transform: translateY(-2px);
 }
 
 .submit-btn {
@@ -1293,30 +1308,77 @@ footer {
 /* Custom Cursor */
 .custom-cursor {
     position: fixed;
-    width: 20px;
-    height: 20px;
-    border: 2px solid var(--accent);
-    border-radius: 50%;
     pointer-events: none;
     z-index: 9999;
-    transition: transform 0.1s ease, opacity 0.3s ease;
-    opacity: 0;
     mix-blend-mode: difference;
+    transition: all 0.1s ease;
+}
+
+.cursor-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    top: 0;
+    left: 0;
     transform: translate(-50%, -50%);
+    z-index: 9999;
+    pointer-events: none;
+    transition: width 0.2s, height 0.2s, background-color 0.2s;
 }
 
-[data-theme="light"] .custom-cursor {
-    border: 2px solid var(--accent);
-    mix-blend-mode: normal;
-    box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.3);
-}
-
-.cursor-hover {
+.cursor-outline {
     width: 40px;
     height: 40px;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translate(-50%, -50%);
+    z-index: 9998;
+    pointer-events: none;
+    transition: all 0.1s ease;
+    opacity: 0.5;
+}
+
+.cursor-hover .cursor-dot {
+    width: 12px;
+    height: 12px;
+    background-color: #fff;
+}
+
+.cursor-hover .cursor-outline {
+    width: 60px;
+    height: 60px;
     background-color: rgba(var(--accent-rgb), 0.1);
-    border-width: 1px;
-    transition: all 0.2s ease;
+    border-color: #fff;
+    opacity: 0.8;
+}
+
+[data-theme="light"] .cursor-dot {
+    background-color: var(--accent);
+}
+
+[data-theme="light"] .cursor-outline {
+    border-color: var(--accent);
+}
+
+[data-theme="light"] .cursor-hover .cursor-dot {
+    background-color: var(--dark);
+}
+
+[data-theme="light"] .cursor-hover .cursor-outline {
+    border-color: var(--dark);
+    background-color: rgba(var(--accent-rgb), 0.1);
+}
+
+/* Hide custom cursor on mobile */
+@media (max-width: 768px) {
+    .cursor-dot, .cursor-outline {
+        display: none;
+    }
 }
 
 /* Mobile device optimizations */
@@ -1556,4 +1618,138 @@ body.theme-transition * {
 
 [data-theme="light"] .nav-menu li a:hover {
     color: #007565;
+}
+
+/* Preloader styles */
+.preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease, visibility 0.5s;
+}
+
+.preloader.fade-out {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.loader {
+    display: flex;
+}
+
+.circle {
+    width: 20px;
+    height: 20px;
+    margin: 0 10px;
+    border-radius: 50%;
+    background-color: var(--accent);
+    animation: bounce 1.4s ease infinite;
+    transform: translateY(0);
+}
+
+.circle:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.circle:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.circle:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-30px);
+    }
+}
+
+/* Smooth scrolling improvements */
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 80px; /* Adjust based on navbar height */
+}
+
+/* Accessibility improvements */
+a:focus, button:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+/* Mobile responsiveness improvements */
+@media (max-width: 768px) {
+    .section {
+        padding: 50px 0;
+    }
+    
+    .skills-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .projects-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .project-card:hover {
+        transform: translateY(-5px);
+    }
+}
+
+/* Skill level indicators */
+.skill-level {
+    width: 100%;
+    height: 4px;
+    background-color: rgba(var(--accent-rgb), 0.1);
+    border-radius: 10px;
+    margin-top: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.skill-level-bar {
+    height: 100%;
+    background-color: var(--accent);
+    border-radius: 10px;
+    position: relative;
+    transform: translateX(-100%);
+    transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.section-visible .skill-level-bar {
+    transform: translateX(0);
+}
+
+.skill-card {
+    position: relative;
+}
+
+.skill-card::after {
+    content: attr(data-skill-level);
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 0.6rem;
+    background-color: var(--accent);
+    color: var(--dark);
+    padding: 2px 6px;
+    border-radius: 10px;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.skill-card:hover::after {
+    opacity: 1;
+    transform: translateY(0);
 } 

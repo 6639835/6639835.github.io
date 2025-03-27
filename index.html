@@ -7,9 +7,21 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js" defer></script>
+    <meta name="description" content="Portfolio of Justin, a software engineer and developer specializing in web development and aviation solutions">
+    <meta name="keywords" content="software engineer, developer, web development, JavaScript, Python, React">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body>
+    <!-- Preloader -->
+    <div class="preloader">
+        <div class="loader">
+            <div class="circle"></div>
+            <div class="circle"></div>
+            <div class="circle"></div>
+        </div>
+    </div>
+
     <div id="particles-js"></div>
     <nav class="navbar">
         <div class="container nav-container">
@@ -67,21 +79,33 @@
             <div class="skills-category">
                 <h3>Languages</h3>
                 <div class="skills-grid">
-                    <div class="skill-card">
+                    <div class="skill-card" data-skill-level="Expert">
                         <i class="fab fa-python"></i>
                         <span>Python</span>
+                        <div class="skill-level">
+                            <div class="skill-level-bar" style="width: 95%"></div>
+                        </div>
                     </div>
-                    <div class="skill-card">
+                    <div class="skill-card" data-skill-level="Advanced">
                         <i class="fab fa-js"></i>
                         <span>JavaScript</span>
+                        <div class="skill-level">
+                            <div class="skill-level-bar" style="width: 85%"></div>
+                        </div>
                     </div>
-                    <div class="skill-card">
+                    <div class="skill-card" data-skill-level="Advanced">
                         <i class="fab fa-java"></i>
                         <span>Java</span>
+                        <div class="skill-level">
+                            <div class="skill-level-bar" style="width: 80%"></div>
+                        </div>
                     </div>
-                    <div class="skill-card">
+                    <div class="skill-card" data-skill-level="Intermediate">
                         <i class="fas fa-code"></i>
                         <span>C++</span>
+                        <div class="skill-level">
+                            <div class="skill-level-bar" style="width: 70%"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -381,12 +405,14 @@
         </div>
     </section>
 
-    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark/light mode">
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark/light mode" title="Toggle theme">
         <i class="fas fa-moon" id="theme-icon"></i>
+        <span class="sr-only">Toggle Dark/Light Mode</span>
     </button>
     
-    <button class="back-to-top" id="back-to-top" aria-label="Back to top">
+    <button class="back-to-top" id="back-to-top" aria-label="Back to top" title="Back to top">
         <i class="fas fa-arrow-up"></i>
+        <span class="sr-only">Back to top</span>
     </button>
 
     <footer>
@@ -396,5 +422,18 @@
     </footer>
 
     <script src="script.js"></script>
+    <style>
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+    </style>
 </body>
 </html> 
