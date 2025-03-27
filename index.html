@@ -11,6 +11,10 @@
     <meta name="description" content="Portfolio of Justin, a software engineer and developer specializing in web development and aviation solutions">
     <meta name="keywords" content="software engineer, developer, web development, JavaScript, Python, React">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <!-- Open Graph meta tags for better social sharing -->
+    <meta property="og:title" content="Justin - Software Engineer & Developer">
+    <meta property="og:description" content="Portfolio of Justin, a software engineer and developer specializing in web development and aviation solutions">
+    <meta property="og:type" content="website">
 </head>
 <body>
     <!-- Preloader -->
@@ -37,6 +41,11 @@
                 <li><a href="#projects">Projects</a></li>
                 <li><a href="#github-stats">Stats</a></li>
                 <li><a href="#contact">Contact</a></li>
+                <li>
+                    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark/light mode">
+                        <i id="theme-icon" class="fas fa-sun"></i>
+                    </button>
+                </li>
             </ul>
         </div>
     </nav>
@@ -45,18 +54,26 @@
         <div class="container">
             <div class="profile">
                 <div class="profile-content">
-                    <h1>Hello there! 👋 I'm <span class="highlight">Justin</span></h1>
+                    <h1>Hello there! <span class="wave">👋</span> I'm <span class="highlight">Justin</span></h1>
                     <h2>Software Engineer & Developer</h2>
                     <p class="tagline">Transforming complex problems into elegant, scalable solutions</p>
                     <div class="cta-buttons">
-                        <a href="#projects" class="primary-btn">View Projects</a>
-                        <a href="#contact" class="secondary-btn">Contact Me</a>
+                        <a href="#projects" class="primary-btn"><i class="fas fa-code"></i> View Projects</a>
+                        <a href="#contact" class="secondary-btn"><i class="fas fa-paper-plane"></i> Contact Me</a>
                     </div>
                     <div class="socials">
-                        <a href="mailto:6639835@gmail.com" class="social-icon"><i class="fas fa-envelope"></i></a>
-                        <a href="https://github.com/6639835" class="social-icon"><i class="fab fa-github"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-linkedin"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                        <a href="mailto:6639835@gmail.com" class="social-icon" aria-label="Email" data-tooltip="Email me">
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                        <a href="https://github.com/6639835" class="social-icon" aria-label="GitHub" data-tooltip="View GitHub">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" class="social-icon" aria-label="LinkedIn" data-tooltip="Connect on LinkedIn">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="#" class="social-icon" aria-label="Twitter" data-tooltip="Follow on Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -65,16 +82,40 @@
 
     <section id="about" class="section">
         <div class="container">
-            <h2 class="section-title">About Me 💻</h2>
+            <h2 class="section-title">About Me</h2>
             <div class="about-content">
-                <p>I'm a passionate software engineer focused on building elegant, scalable solutions. I transform complex problems into efficient code, continuously learning and contributing to the developer community. Let's collaborate and build something innovative! 🚀</p>
+                <div class="about-grid">
+                    <div class="about-text">
+                        <p>I'm a passionate software engineer focused on building elegant, scalable solutions. I transform complex problems into efficient code, continuously learning and contributing to the developer community.</p>
+                        <p>With expertise in both frontend and backend technologies, I create robust applications that deliver exceptional user experiences while maintaining clean, maintainable codebases.</p>
+                        <p>Let's collaborate and build something innovative! 🚀</p>
+                        
+                        <div class="about-highlights">
+                            <div class="highlight-item">
+                                <i class="fas fa-code"></i>
+                                <h3>Clean Code</h3>
+                                <p>Writing maintainable, well-documented code is my priority</p>
+                            </div>
+                            <div class="highlight-item">
+                                <i class="fas fa-rocket"></i>
+                                <h3>Performance</h3>
+                                <p>Optimizing for speed and efficiency in every project</p>
+                            </div>
+                            <div class="highlight-item">
+                                <i class="fas fa-users"></i>
+                                <h3>Collaboration</h3>
+                                <p>Working effectively with teams to deliver great results</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
     <section id="skills" class="section">
         <div class="container">
-            <h2 class="section-title">Technical Skills 🛠️</h2>
+            <h2 class="section-title">Technical Skills</h2>
             
             <div class="skills-category">
                 <h3>Languages</h3>
@@ -222,7 +263,7 @@
 
     <section id="projects" class="section">
         <div class="container">
-            <h2 class="section-title">Featured Projects 🔥</h2>
+            <h2 class="section-title">Featured Projects</h2>
             
             <div class="project-filter">
                 <button class="filter-btn active" data-filter="all">All</button>
@@ -248,192 +289,174 @@
                         <div class="project-header">
                             <h3>VOR-FIX-CALCULATION ✈️</h3>
                             <div class="project-links">
-                                <a href="https://github.com/6639835/VOR-FIX-CALCULATION" target="_blank" aria-label="GitHub Repository">
+                                <a href="https://github.com/6639835" target="_blank" aria-label="View code on GitHub">
                                     <i class="fab fa-github"></i>
+                                </a>
+                                <a href="#" target="_blank" aria-label="Visit live project">
+                                    <i class="fas fa-external-link-alt"></i>
                                 </a>
                             </div>
                         </div>
-                        <p class="project-desc">Aviation Navigation Tool</p>
+                        <p class="project-desc">A specialized tool for aviation navigational calculations, determining intersections between VOR radials and calculating fix positions.</p>
                         <ul class="project-features">
-                            <li>Streamlines and manages navdata for flight simulation environments</li>
-                            <li>Improves navigation accuracy for virtual pilots</li>
-                            <li><strong>Technologies:</strong> Python, Geospatial analysis</li>
+                            <li>High-precision geographic calculations</li>
+                            <li>Support for multiple navigation formats</li>
+                            <li>Integration with aeronautical databases</li>
                         </ul>
                         <div class="project-tags">
                             <span class="tag">Python</span>
                             <span class="tag">Aviation</span>
-                            <span class="tag">Navigation</span>
+                            <span class="tag">GIS</span>
                         </div>
                     </div>
                 </div>
                 
-                <div class="project-card" data-category="aviation data">
+                <div class="project-card" data-category="web data">
                     <div class="project-image">
                         <svg viewBox="0 0 600 340" xmlns="http://www.w3.org/2000/svg" class="project-svg">
                             <rect width="600" height="340" fill="#0a192f"/>
                             <rect x="150" y="80" width="300" height="180" rx="10" fill="#112240" stroke="#64ffda" stroke-width="2"/>
-                            <!-- Grid lines -->
-                            <path d="M150 120 L450 120 M150 160 L450 160 M150 200 L450 200 M150 240 L450 240" stroke="#64ffda" stroke-width="1" stroke-opacity="0.3"/>
-                            <path d="M200 80 L200 260 M250 80 L250 260 M300 80 L300 260 M350 80 L350 260 M400 80 L400 260" stroke="#64ffda" stroke-width="1" stroke-opacity="0.3"/>
-                            <!-- Route line -->
-                            <path d="M180 200 Q250 100, 300 180 Q350 240, 420 140" stroke="#64ffda" stroke-width="3" fill="none"/>
-                            <circle cx="180" cy="200" r="6" fill="#64ffda"/>
-                            <circle cx="300" cy="180" r="6" fill="#64ffda"/>
-                            <circle cx="420" cy="140" r="6" fill="#64ffda"/>
-                            <text x="300" y="280" fill="#64ffda" font-family="Arial" font-size="22" text-anchor="middle">X-Plane-Airway-Filter</text>
-                            <path d="M440 110 L460 90 M440 90 L460 110" stroke="#64ffda" stroke-width="2"/>
+                            <rect x="170" y="110" width="260" height="120" rx="5" fill="#0a192f" stroke="#64ffda" stroke-width="1"/>
+                            <circle cx="300" cy="230" r="10" fill="#64ffda"/>
+                            <path d="M200 150 L250 150 M200 170 L270 170 M200 190 L260 190" stroke="#64ffda" stroke-width="2"/>
+                            <text x="300" y="280" fill="#64ffda" font-family="Arial" font-size="24" text-anchor="middle">DATA DASHBOARD</text>
                         </svg>
                     </div>
                     <div class="project-content">
                         <div class="project-header">
-                            <h3>X-Plane-Airway-Filter 🗺️</h3>
+                            <h3>Interactive Data Dashboard 📊</h3>
                             <div class="project-links">
-                                <a href="https://github.com/6639835/X-Plane-Airway-Filter" target="_blank" aria-label="GitHub Repository">
+                                <a href="https://github.com/6639835" target="_blank" aria-label="View code on GitHub">
                                     <i class="fab fa-github"></i>
+                                </a>
+                                <a href="#" target="_blank" aria-label="Visit live project">
+                                    <i class="fas fa-external-link-alt"></i>
                                 </a>
                             </div>
                         </div>
-                        <p class="project-desc">Flight Simulation Data Management</p>
+                        <p class="project-desc">Real-time data visualization dashboard showcasing interactive charts and insights for business analytics.</p>
                         <ul class="project-features">
-                            <li>Maintains accurate PMDG aircraft navigation databases</li>
-                            <li>Ensures precision in virtual aviation environments</li>
-                            <li><strong>Technologies:</strong> Python, Data processing</li>
+                            <li>Dynamic data filtering and sorting</li>
+                            <li>Responsive design for all devices</li>
+                            <li>API integration for live data updates</li>
                         </ul>
                         <div class="project-tags">
-                            <span class="tag">Python</span>
-                            <span class="tag">Data Processing</span>
-                            <span class="tag">Flight Sim</span>
+                            <span class="tag">React</span>
+                            <span class="tag">D3.js</span>
+                            <span class="tag">Node.js</span>
                         </div>
                     </div>
                 </div>
                 
-                <!-- New Web Development Project -->
                 <div class="project-card" data-category="web">
                     <div class="project-image">
                         <svg viewBox="0 0 600 340" xmlns="http://www.w3.org/2000/svg" class="project-svg">
                             <rect width="600" height="340" fill="#0a192f"/>
-                            <rect x="150" y="80" width="300" height="180" rx="15" fill="#112240" stroke="#64ffda" stroke-width="2"/>
-                            <!-- Browser top bar -->
-                            <rect x="150" y="80" width="300" height="30" rx="15" fill="#193d59" stroke="#64ffda" stroke-width="2"/>
-                            <circle cx="170" cy="95" r="5" fill="#64ffda"/>
-                            <circle cx="190" cy="95" r="5" fill="#64ffda"/>
-                            <circle cx="210" cy="95" r="5" fill="#64ffda"/>
-                            <!-- Code elements -->
-                            <rect x="170" y="130" width="120" height="15" rx="3" fill="#64ffda" opacity="0.3"/>
-                            <rect x="170" y="155" width="260" height="15" rx="3" fill="#64ffda" opacity="0.2"/>
-                            <rect x="170" y="180" width="200" height="15" rx="3" fill="#64ffda" opacity="0.3"/>
-                            <rect x="170" y="205" width="180" height="15" rx="3" fill="#64ffda" opacity="0.2"/>
-                            <rect x="170" y="230" width="230" height="15" rx="3" fill="#64ffda" opacity="0.3"/>
-                            <!-- Brackets -->
-                            <text x="340" y="190" fill="#64ffda" font-family="monospace" font-size="60" text-anchor="middle">{   }</text>
-                            <text x="300" y="280" fill="#64ffda" font-family="Arial" font-size="24" text-anchor="middle">Personal Portfolio</text>
+                            <path d="M200 80 L400 80 L400 260 L200 260 Z" fill="#112240" stroke="#64ffda" stroke-width="2"/>
+                            <circle cx="240" cy="120" r="20" fill="#64ffda" opacity="0.8"/>
+                            <rect x="280" y="110" width="80" height="20" rx="5" fill="#64ffda" opacity="0.6"/>
+                            <rect x="240" y="160" width="200" height="10" rx="5" fill="#64ffda" opacity="0.4"/>
+                            <rect x="240" y="180" width="170" height="10" rx="5" fill="#64ffda" opacity="0.4"/>
+                            <rect x="240" y="200" width="190" height="10" rx="5" fill="#64ffda" opacity="0.4"/>
+                            <text x="300" y="280" fill="#64ffda" font-family="Arial" font-size="24" text-anchor="middle">PERSONAL BLOG</text>
                         </svg>
                     </div>
                     <div class="project-content">
                         <div class="project-header">
-                            <h3>Personal Portfolio 💼</h3>
+                            <h3>Tech Blog Platform 📝</h3>
                             <div class="project-links">
-                                <a href="#" target="_blank" aria-label="Live Demo">
-                                    <i class="fas fa-external-link-alt"></i>
-                                </a>
-                                <a href="#" target="_blank" aria-label="GitHub Repository">
+                                <a href="https://github.com/6639835" target="_blank" aria-label="View code on GitHub">
                                     <i class="fab fa-github"></i>
+                                </a>
+                                <a href="#" target="_blank" aria-label="Visit live project">
+                                    <i class="fas fa-external-link-alt"></i>
                                 </a>
                             </div>
                         </div>
-                        <p class="project-desc">Modern Developer Portfolio</p>
+                        <p class="project-desc">A modern tech blog platform with full CMS, advanced markdown support and code syntax highlighting.</p>
                         <ul class="project-features">
-                            <li>Responsive design with modern UI/UX principles</li>
-                            <li>Animated elements and smooth transitions</li>
-                            <li><strong>Technologies:</strong> HTML, CSS, JavaScript</li>
+                            <li>Server-side rendering for SEO optimization</li>
+                            <li>Custom CMS with image management</li>
+                            <li>Built-in analytics dashboard</li>
                         </ul>
                         <div class="project-tags">
-                            <span class="tag">HTML5</span>
-                            <span class="tag">CSS3</span>
-                            <span class="tag">JavaScript</span>
+                            <span class="tag">Next.js</span>
+                            <span class="tag">GraphQL</span>
+                            <span class="tag">MongoDB</span>
                         </div>
                     </div>
                 </div>
+            </div>
+            
+            <div class="section-cta">
+                <a href="https://github.com/6639835" target="_blank" class="secondary-btn">
+                    <i class="fab fa-github"></i> View More on GitHub
+                </a>
             </div>
         </div>
     </section>
 
     <section id="github-stats" class="section">
         <div class="container">
-            <h2 class="section-title">GitHub Stats 📊</h2>
+            <h2 class="section-title">GitHub Statistics</h2>
             <div class="github-stats">
-                <img src="https://github-readme-stats.vercel.app/api?username=6639835&show_icons=true&theme=tokyonight" alt="GitHub Stats" />
-                <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=6639835&layout=compact&theme=tokyonight" alt="Top Languages" />
-                <img src="https://github-readme-streak-stats.herokuapp.com/?user=6639835&theme=tokyonight" alt="GitHub Streak" />
-                <img src="https://github-profile-trophy.vercel.app/?username=6639835&theme=nord&column=4&margin-w=15&margin-h=15" alt="GitHub Trophies" />
+                <img src="https://github-readme-stats.vercel.app/api?username=6639835&show_icons=true&theme=dark" alt="GitHub Stats">
+                <img src="https://github-readme-streak-stats.herokuapp.com/?user=6639835&theme=dark" alt="GitHub Streak Stats">
             </div>
         </div>
     </section>
 
     <section id="contact" class="section">
         <div class="container">
-            <h2 class="section-title">Connect With Me 🤝</h2>
+            <h2 class="section-title">Get In Touch</h2>
+            <p class="contact-intro">Have a question or want to work together? Feel free to reach out.</p>
+            
             <div class="contact-form-container">
-                <form id="contact-form" class="contact-form" action="https://api.web3forms.com/submit" method="POST">
-                    <input type="hidden" name="access_key" value="a084fa8d-0d17-4c02-8b0e-4d8d905e6aa3">
-                    <input type="hidden" name="subject" value="New contact from website portfolio">
+                <form class="contact-form" id="contact-form">
                     <div class="form-group">
-                        <input type="text" id="name" name="name" placeholder="Your Name" required>
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" placeholder="Your name" required>
                     </div>
                     <div class="form-group">
-                        <input type="email" id="email" name="email" placeholder="Your Email" required>
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" placeholder="Your email" required>
                     </div>
                     <div class="form-group">
-                        <input type="text" id="subject" name="custom_subject" placeholder="Subject">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" rows="5" placeholder="Your message" required></textarea>
                     </div>
-                    <div class="form-group">
-                        <textarea id="message" name="message" placeholder="Your Message" required></textarea>
-                    </div>
-                    <button type="submit" class="submit-btn">Send Message <i class="fas fa-paper-plane"></i></button>
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-paper-plane"></i> Send Message
+                    </button>
                 </form>
-                <div id="form-message" class="form-message"></div>
             </div>
+            
             <div class="contact-links">
                 <a href="mailto:6639835@gmail.com" class="contact-button">
-                    <i class="fas fa-envelope"></i> Email
+                    <i class="fas fa-envelope"></i> Email Me
+                </a>
+                <a href="#" class="contact-button">
+                    <i class="fab fa-linkedin"></i> LinkedIn
                 </a>
                 <a href="https://github.com/6639835" class="contact-button">
                     <i class="fab fa-github"></i> GitHub
                 </a>
             </div>
-            <p class="contact-note">💡 I'm always interested in challenging projects and collaborations. Whether you have a project idea, technical question, or just want to connect, feel free to reach out!</p>
+            
+            <p class="contact-note">Prefer email? Contact me directly at <a href="mailto:6639835@gmail.com">6639835@gmail.com</a></p>
         </div>
     </section>
 
-    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark/light mode" title="Toggle theme">
-        <i class="fas fa-moon" id="theme-icon"></i>
-        <span class="sr-only">Toggle Dark/Light Mode</span>
-    </button>
-    
-    <button class="back-to-top" id="back-to-top" aria-label="Back to top" title="Back to top">
-        <i class="fas fa-arrow-up"></i>
-        <span class="sr-only">Back to top</span>
-    </button>
-
     <footer>
         <div class="container">
-            <p>&copy; 2025 6639835. All rights reserved.</p>
+            <p>&copy; 2023 Justin | Software Engineer & Developer. All rights reserved.</p>
         </div>
     </footer>
-
+    
+    <button class="back-to-top" aria-label="Back to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+    
     <script src="script.js"></script>
-    <style>
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border-width: 0;
-        }
-    </style>
 </body>
 </html> 
