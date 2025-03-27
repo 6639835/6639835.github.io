@@ -629,7 +629,7 @@ document.addEventListener('DOMContentLoaded', () => {
             cursor.style.opacity = '0';
             cursorVisible = false;
         }
-    }, 3000);
+    }, 5000);
     
     document.addEventListener('mousemove', e => {
         cursorX = e.clientX;
@@ -790,22 +790,46 @@ document.addEventListener('DOMContentLoaded', () => {
                 cursor.style.opacity = '0';
                 cursorVisible = false;
             }
-        }, 3000);
+        }, 5000);
         
         // Track mouse movement
         document.addEventListener('mousemove', e => {
             const cursorX = e.clientX;
             const cursorY = e.clientY;
             
-            if (!cursorVisible) {
-                cursor.style.opacity = '1';
-                cursorVisible = true;
-            }
-            
-            cursor.style.transform = `translate(${cursorX}px, ${cursorY}px)`;
+            // Use requestAnimationFrame for smoother cursor movement
+            requestAnimationFrame(() => {
+                cursor.style.transform = `translate(${cursorX}px, ${cursorY}px)`;
+                
+                if (!cursorVisible) {
+                    cursor.style.opacity = '1';
+                    cursorVisible = true;
+                }
+            });
             
             mouseStopped();
         });
+        
+        // Add cursor style adjustments when theme changes
+        const themeToggle = document.getElementById('theme-toggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                // Allow cursor to adjust to theme change
+                setTimeout(() => {
+                    const currentTheme = document.documentElement.getAttribute('data-theme');
+                    updateCursorForTheme(currentTheme);
+                }, 100);
+            });
+        }
+        
+        // Initial cursor style based on current theme
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        updateCursorForTheme(currentTheme);
+        
+        // Update cursor style based on theme
+        function updateCursorForTheme(theme) {
+            // The CSS now handles theme-specific cursor styling
+        }
         
         // Add hover effect for interactive elements
         const interactiveElements = document.querySelectorAll('a, button, .project-card, .skill-card, .nav-toggle, .theme-toggle, .back-to-top');
