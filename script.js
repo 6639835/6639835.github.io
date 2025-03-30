@@ -86,6 +86,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize tooltips
     initTooltips();
     
+    // Initialize testimonials slider
+    initTestimonialsSlider();
+    
+    // Initialize project search
+    initProjectSearch();
+    
+    // Initialize blog functionality
+    initBlogFunctionality();
+    
     // Initialize particles.js with enhanced configuration
     if (typeof particlesJS !== 'undefined') {
         const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
@@ -251,41 +260,65 @@ document.addEventListener('DOMContentLoaded', () => {
     function initThemeToggle() {
         const themeToggle = document.getElementById('theme-toggle');
         const themeIcon = document.getElementById('theme-icon');
-        const htmlElement = document.documentElement;
         
-        // Check for saved theme preference or use default
+        // Check for saved theme preference or use default dark theme
         const savedTheme = localStorage.getItem('theme') || 'dark';
-        htmlElement.setAttribute('data-theme', savedTheme);
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        
+        // Update icon based on current theme
         updateThemeIcon(savedTheme);
         
-        // Toggle theme when button is clicked
         if (themeToggle) {
             themeToggle.addEventListener('click', () => {
-                const currentTheme = htmlElement.getAttribute('data-theme');
+                // Add transition class to body for smoother theme switching
+                document.documentElement.classList.add('theme-transition');
+                
+                // Toggle theme
+                const currentTheme = document.documentElement.getAttribute('data-theme');
                 const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
                 
-                // Add transition class for smooth theme change
-                htmlElement.classList.add('theme-transition');
+                // Add visual effect for theme change
+                const ripple = document.createElement('span');
+                ripple.classList.add('theme-toggle-ripple');
+                themeToggle.appendChild(ripple);
                 
-                // Update theme
-                htmlElement.setAttribute('data-theme', newTheme);
-                localStorage.setItem('theme', newTheme);
-                
-                // Update icon
-                updateThemeIcon(newTheme);
-                
-                // Update particles color if particles are initialized
-                if (typeof pJSDom !== 'undefined' && pJSDom.length > 0) {
-                    const particleColor = newTheme === 'dark' ? '#64ffda' : '#007565';
-                    pJSDom[0].pJS.particles.color.value = particleColor;
-                    pJSDom[0].pJS.particles.line_linked.color = particleColor;
-                    pJSDom[0].pJS.fn.particlesRefresh();
+                // Add transform origin based on theme
+                if (newTheme === 'light') {
+                    ripple.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+                } else {
+                    ripple.style.backgroundColor = 'rgba(10, 25, 47, 0.8)';
                 }
                 
-                // Remove transition class after transition is complete
+                // Animate the ripple
                 setTimeout(() => {
-                    htmlElement.classList.remove('theme-transition');
-                }, 500);
+                    ripple.style.transform = 'scale(150)';
+                    ripple.style.opacity = '0.3';
+                }, 10);
+                
+                // Apply theme change
+                setTimeout(() => {
+                    document.documentElement.setAttribute('data-theme', newTheme);
+                    localStorage.setItem('theme', newTheme);
+                    updateThemeIcon(newTheme);
+                    
+                    // Update particles color if particles.js is initialized
+                    if (typeof pJSDom !== 'undefined' && pJSDom.length > 0) {
+                        const particleColor = newTheme === 'dark' ? '#64ffda' : '#0056b3';
+                        pJSDom[0].pJS.particles.color.value = particleColor;
+                        pJSDom[0].pJS.particles.line_linked.color = particleColor;
+                        pJSDom[0].pJS.fn.particlesRefresh();
+                    }
+                    
+                    // Clean up the ripple effect
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                }, 300);
+                
+                // Remove transition class after theme change is complete
+                setTimeout(() => {
+                    document.documentElement.classList.remove('theme-transition');
+                }, 1000);
             });
         }
         
@@ -295,9 +328,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (theme === 'dark') {
                     themeIcon.classList.remove('fa-moon');
                     themeIcon.classList.add('fa-sun');
+                    
+                    // Add subtle animation
+                    themeIcon.style.animation = 'rotate 0.5s ease-in-out';
+                    setTimeout(() => {
+                        themeIcon.style.animation = '';
+                    }, 500);
                 } else {
                     themeIcon.classList.remove('fa-sun');
                     themeIcon.classList.add('fa-moon');
+                    
+                    // Add subtle animation
+                    themeIcon.style.animation = 'rotate 0.5s ease-in-out';
+                    setTimeout(() => {
+                        themeIcon.style.animation = '';
+                    }, 500);
                 }
             }
         }
@@ -711,6 +756,484 @@ document.addEventListener('DOMContentLoaded', () => {
                 tooltip.remove();
             });
         });
+    }
+    
+    // Initialize the testimonials slider
+    function initTestimonialsSlider() {
+        const slides = document.querySelectorAll('.testimonial-card');
+        const dots = document.querySelectorAll('.dot');
+        let currentIndex = 0;
+        
+        if (slides.length === 0 || dots.length === 0) return;
+        
+        // Function to set the active slide
+        const setActiveSlide = (index) => {
+            // Remove active class from all slides
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+            
+            // Remove active class from all dots
+            dots.forEach(dot => {
+                dot.classList.remove('active');
+            });
+            
+            // Add active class to current slide and dot
+            slides[index].classList.add('active');
+            dots[index].classList.add('active');
+            
+            // Move the slider - position all slides
+            slides.forEach((slide, i) => {
+                // Position each slide relative to the active one
+                // This ensures proper positioning for all slides
+                slide.style.transform = `translateX(${(i - index) * 100}%)`;
+                slide.style.opacity = i === index ? '1' : '0.4';
+                slide.style.zIndex = i === index ? '2' : '1';
+            });
+        };
+        
+        // Make all slides initially visible but positioned off-screen
+        slides.forEach((slide, i) => {
+            slide.style.display = 'block';
+            slide.style.position = 'absolute';
+            slide.style.width = '100%';
+            slide.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
+            if (i !== 0) {
+                slide.style.transform = `translateX(100%)`;
+                slide.style.opacity = '0.4';
+            }
+        });
+        
+        // Set first slide as active initially
+        setActiveSlide(0);
+        
+        // Add click event listeners to dots
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                currentIndex = index;
+                setActiveSlide(currentIndex);
+            });
+        });
+        
+        // Auto-rotate slides
+        const autoRotate = () => {
+            currentIndex = (currentIndex + 1) % slides.length;
+            setActiveSlide(currentIndex);
+        };
+        
+        // Set interval for auto-rotation (7 seconds)
+        let rotationInterval = setInterval(autoRotate, 7000);
+        
+        // Pause rotation on hover
+        const sliderContainer = document.querySelector('.testimonials-slider');
+        if (sliderContainer) {
+            sliderContainer.addEventListener('mouseenter', () => {
+                clearInterval(rotationInterval);
+            });
+            
+            sliderContainer.addEventListener('mouseleave', () => {
+                clearInterval(rotationInterval);
+                rotationInterval = setInterval(autoRotate, 7000);
+            });
+            
+            // Handle touch events for mobile
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            sliderContainer.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, false);
+            
+            sliderContainer.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, false);
+            
+            const handleSwipe = () => {
+                // Swipe left (next slide)
+                if (touchStartX - touchEndX > 50) {
+                    currentIndex = (currentIndex + 1) % slides.length;
+                    setActiveSlide(currentIndex);
+                }
+                
+                // Swipe right (previous slide)
+                if (touchEndX - touchStartX > 50) {
+                    currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+                    setActiveSlide(currentIndex);
+                }
+            };
+        }
+    }
+    
+    // Initialize project search functionality
+    function initProjectSearch() {
+        const projectSearchContainer = document.createElement('div');
+        projectSearchContainer.className = 'project-search-container';
+        
+        const projectsSection = document.querySelector('#projects .container');
+        
+        if (!projectsSection) return;
+        
+        // Create search input
+        const searchInput = document.createElement('input');
+        searchInput.type = 'text';
+        searchInput.className = 'project-search-input';
+        searchInput.placeholder = 'Search projects...';
+        
+        // Create search icon
+        const searchIcon = document.createElement('i');
+        searchIcon.className = 'fas fa-search search-icon';
+        
+        // Append elements
+        projectSearchContainer.appendChild(searchIcon);
+        projectSearchContainer.appendChild(searchInput);
+        
+        // Insert search container after the section title
+        const sectionTitle = projectsSection.querySelector('.section-title');
+        if (sectionTitle && sectionTitle.nextElementSibling) {
+            projectsSection.insertBefore(projectSearchContainer, sectionTitle.nextElementSibling);
+        } else {
+            projectsSection.appendChild(projectSearchContainer);
+        }
+        
+        // Add event listener for search
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            const projects = document.querySelectorAll('.project-card');
+            
+            projects.forEach(project => {
+                const title = project.querySelector('.project-header h3').textContent.toLowerCase();
+                const description = project.querySelector('.project-desc').textContent.toLowerCase();
+                const tags = Array.from(project.querySelectorAll('.tag')).map(tag => tag.textContent.toLowerCase());
+                
+                // Check if project matches search term
+                const matchesSearch = title.includes(searchTerm) || 
+                                    description.includes(searchTerm) || 
+                                    tags.some(tag => tag.includes(searchTerm));
+                
+                // Show or hide based on search
+                if (matchesSearch || searchTerm === '') {
+                    project.style.display = 'flex';
+                    // Animate the appearance
+                    setTimeout(() => {
+                        project.style.opacity = '1';
+                        project.style.transform = 'translateY(0)';
+                    }, 50);
+                } else {
+                    project.style.opacity = '0';
+                    project.style.transform = 'translateY(20px)';
+                    setTimeout(() => {
+                        project.style.display = 'none';
+                    }, 300);
+                }
+            });
+            
+            // Show "no results" message if no projects match
+            let noResultsMsg = document.querySelector('.no-results-message');
+            const hasVisibleProjects = Array.from(projects).some(p => p.style.display !== 'none');
+            
+            if (!hasVisibleProjects && searchTerm !== '') {
+                if (!noResultsMsg) {
+                    noResultsMsg = document.createElement('div');
+                    noResultsMsg.className = 'no-results-message';
+                    noResultsMsg.innerHTML = `
+                        <i class="fas fa-search"></i>
+                        <p>No projects found matching "${searchTerm}"</p>
+                        <button class="clear-search-btn">Clear Search</button>
+                    `;
+                    document.querySelector('.projects-grid').after(noResultsMsg);
+                    
+                    // Add event listener to the clear button
+                    document.querySelector('.clear-search-btn').addEventListener('click', () => {
+                        searchInput.value = '';
+                        searchInput.dispatchEvent(new Event('input'));
+                    });
+                } else {
+                    noResultsMsg.querySelector('p').textContent = `No projects found matching "${searchTerm}"`;
+                    noResultsMsg.style.display = 'flex';
+                }
+            } else if (noResultsMsg) {
+                noResultsMsg.style.display = 'none';
+            }
+        });
+        
+        // Add clear button inside search input
+        const clearButton = document.createElement('button');
+        clearButton.className = 'search-clear-btn';
+        clearButton.innerHTML = '<i class="fas fa-times"></i>';
+        clearButton.style.display = 'none';
+        projectSearchContainer.appendChild(clearButton);
+        
+        // Show/hide clear button based on input
+        searchInput.addEventListener('input', () => {
+            clearButton.style.display = searchInput.value ? 'block' : 'none';
+        });
+        
+        // Clear search when button is clicked
+        clearButton.addEventListener('click', () => {
+            searchInput.value = '';
+            searchInput.dispatchEvent(new Event('input'));
+            clearButton.style.display = 'none';
+            searchInput.focus();
+        });
+    }
+    
+    // Initialize blog functionality
+    function initBlogFunctionality() {
+        const viewAllBtn = document.querySelector('.blog-section-cta .secondary-btn');
+        
+        if (!viewAllBtn) {
+            // Try alternative selector if the first one doesn't match
+            const alternativeBtn = document.querySelector('#blog .section-cta .secondary-btn');
+            if (alternativeBtn) {
+                setupBlogButton(alternativeBtn);
+            }
+        } else {
+            setupBlogButton(viewAllBtn);
+        }
+        
+        // Handle individual blog article links
+        setupArticleLinks();
+        
+        function setupBlogButton(button) {
+            // Update button to prevent default navigation
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Show loading state
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+                
+                // Simulate loading additional blog posts
+                setTimeout(() => {
+                    // Add more blog articles
+                    const blogGrid = document.querySelector('.blog-grid');
+                    if (blogGrid) {
+                        // Get existing template
+                        const existingArticles = document.querySelectorAll('.blog-card');
+                        if (existingArticles.length > 0) {
+                            const newArticles = [
+                                {
+                                    date: { day: '05', month: 'May' },
+                                    image: 'https://via.placeholder.com/600x400',
+                                    title: 'Understanding Kubernetes for Beginners',
+                                    excerpt: 'A step-by-step guide to understanding container orchestration and deploying your first Kubernetes cluster.',
+                                    tags: ['DevOps', 'Kubernetes'],
+                                    alt: 'Kubernetes Diagram'
+                                },
+                                {
+                                    date: { day: '22', month: 'Apr' },
+                                    image: 'https://via.placeholder.com/600x400',
+                                    title: 'Building Responsive UIs with Tailwind CSS',
+                                    excerpt: 'How to create beautiful, responsive user interfaces quickly using the utility-first CSS framework.',
+                                    tags: ['CSS', 'Frontend'],
+                                    alt: 'Responsive UI Design'
+                                },
+                                {
+                                    date: { day: '15', month: 'Apr' },
+                                    image: 'https://via.placeholder.com/600x400',
+                                    title: 'Testing Strategies for Modern Applications',
+                                    excerpt: 'Effective approaches for testing large-scale applications including unit, integration, and end-to-end testing.',
+                                    tags: ['Testing', 'JavaScript'],
+                                    alt: 'Code Testing'
+                                },
+                                {
+                                    date: { day: '02', month: 'Apr' },
+                                    image: 'https://via.placeholder.com/600x400',
+                                    title: 'Introduction to GraphQL API Development',
+                                    excerpt: 'Learn how to build efficient APIs with GraphQL for better data fetching and improved frontend performance.',
+                                    tags: ['GraphQL', 'API'],
+                                    alt: 'GraphQL Schema'
+                                }
+                            ];
+                            
+                            // Add each new article to the grid
+                            newArticles.forEach(article => {
+                                const articleElement = document.createElement('article');
+                                articleElement.className = 'blog-card';
+                                articleElement.style.opacity = '0';
+                                articleElement.style.transform = 'translateY(20px)';
+                                
+                                articleElement.innerHTML = `
+                                    <div class="blog-image">
+                                        <img src="${article.image}" alt="${article.alt}">
+                                        <div class="blog-date">
+                                            <span class="day">${article.date.day}</span>
+                                            <span class="month">${article.date.month}</span>
+                                        </div>
+                                    </div>
+                                    <div class="blog-content">
+                                        <div class="blog-tags">
+                                            ${article.tags.map(tag => `<span class="blog-tag">${tag}</span>`).join('')}
+                                        </div>
+                                        <h3 class="blog-title">${article.title}</h3>
+                                        <p class="blog-excerpt">${article.excerpt}</p>
+                                        <a href="#" class="blog-read-more">Read Article <i class="fas fa-arrow-right"></i></a>
+                                    </div>
+                                `;
+                                
+                                blogGrid.appendChild(articleElement);
+                                
+                                // Animate in
+                                setTimeout(() => {
+                                    articleElement.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                                    articleElement.style.opacity = '1';
+                                    articleElement.style.transform = 'translateY(0)';
+                                }, 100);
+                            });
+                            
+                            // Setup event handlers for new articles
+                            setupArticleLinks();
+                        }
+                    }
+                    
+                    // Update button text and function
+                    button.innerHTML = '<i class="fas fa-check"></i> All Articles Loaded';
+                    button.disabled = true;
+                    button.style.opacity = '0.7';
+                    button.style.cursor = 'default';
+                    button.removeEventListener('click', arguments.callee);
+                }, 1200);
+            });
+        }
+        
+        function setupArticleLinks() {
+            // Add click handlers to all blog article links
+            const articleLinks = document.querySelectorAll('.blog-read-more');
+            
+            articleLinks.forEach(link => {
+                if (!link.hasAttribute('data-handler-attached')) {
+                    link.setAttribute('data-handler-attached', 'true');
+                    
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        
+                        // Get article details
+                        const article = this.closest('.blog-card');
+                        const title = article.querySelector('.blog-title').textContent;
+                        const image = article.querySelector('.blog-image img').getAttribute('src');
+                        
+                        // Create modal
+                        createArticleModal(title, image);
+                    });
+                }
+            });
+        }
+        
+        function createArticleModal(title, image) {
+            // Create modal container
+            const modal = document.createElement('div');
+            modal.className = 'article-modal';
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.width = '100%';
+            modal.style.height = '100%';
+            modal.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
+            modal.style.zIndex = '1000';
+            modal.style.display = 'flex';
+            modal.style.justifyContent = 'center';
+            modal.style.alignItems = 'center';
+            modal.style.opacity = '0';
+            modal.style.transition = 'opacity 0.3s ease';
+            
+            // Create modal content
+            const modalContent = document.createElement('div');
+            modalContent.className = 'article-modal-content';
+            modalContent.style.backgroundColor = 'var(--card-bg)';
+            modalContent.style.borderRadius = '10px';
+            modalContent.style.width = '90%';
+            modalContent.style.maxWidth = '800px';
+            modalContent.style.maxHeight = '90vh';
+            modalContent.style.overflowY = 'auto';
+            modalContent.style.padding = '30px';
+            modalContent.style.position = 'relative';
+            modalContent.style.transform = 'translateY(20px)';
+            modalContent.style.transition = 'transform 0.3s ease';
+            modalContent.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.3)';
+            
+            // Create close button
+            const closeBtn = document.createElement('button');
+            closeBtn.innerHTML = '<i class="fas fa-times"></i>';
+            closeBtn.style.position = 'absolute';
+            closeBtn.style.top = '15px';
+            closeBtn.style.right = '15px';
+            closeBtn.style.backgroundColor = 'transparent';
+            closeBtn.style.border = 'none';
+            closeBtn.style.color = 'var(--accent)';
+            closeBtn.style.fontSize = '24px';
+            closeBtn.style.cursor = 'pointer';
+            closeBtn.style.zIndex = '1';
+            
+            // Add close button event listener
+            closeBtn.addEventListener('click', () => {
+                modalContent.style.transform = 'translateY(20px)';
+                modal.style.opacity = '0';
+                setTimeout(() => {
+                    document.body.removeChild(modal);
+                    document.body.style.overflow = 'auto';
+                }, 300);
+            });
+            
+            // Create article content
+            const articleContent = document.createElement('div');
+            articleContent.innerHTML = `
+                <div class="article-header" style="margin-bottom: 20px;">
+                    <h2 style="color: var(--light); font-size: 28px; margin-bottom: 20px;">${title}</h2>
+                    <div class="article-meta" style="display: flex; align-items: center; margin-bottom: 20px; color: var(--gray);">
+                        <span style="margin-right: 15px;"><i class="far fa-calendar-alt"></i> Published on May 15, 2023</span>
+                        <span><i class="far fa-clock"></i> 10 min read</span>
+                    </div>
+                </div>
+                <div class="article-featured-image" style="margin-bottom: 30px;">
+                    <img src="${image}" alt="${title}" style="width: 100%; border-radius: 8px; margin-bottom: 20px;">
+                </div>
+                <div class="article-text" style="color: var(--text); line-height: 1.8; font-size: 16px;">
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl nec ultricies ultricies, nisl nisl aliquet nisl, nec aliquet nisl nisl sit amet nisl. Sed euismod, nisl nec ultricies ultricies, nisl nisl aliquet nisl, nec aliquet nisl nisl sit amet nisl.</p>
+                    
+                    <h3 style="color: var(--light); font-size: 22px; margin: 30px 0 15px;">Introduction</h3>
+                    <p>Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+                    <p>Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Donec sed odio dui.</p>
+                    
+                    <h3 style="color: var(--light); font-size: 22px; margin: 30px 0 15px;">Main Section</h3>
+                    <p>Cras mattis consectetur purus sit amet fermentum. Etiam porta sem malesuada magna mollis euismod. Vestibulum id ligula porta felis euismod semper.</p>
+                    <ul style="margin-left: 20px; margin-bottom: 20px;">
+                        <li style="margin-bottom: 10px;">First important point about this topic</li>
+                        <li style="margin-bottom: 10px;">Second important point about this topic</li>
+                        <li style="margin-bottom: 10px;">Third important point about this topic</li>
+                    </ul>
+                    
+                    <h3 style="color: var(--light); font-size: 22px; margin: 30px 0 15px;">Conclusion</h3>
+                    <p>Cras mattis consectetur purus sit amet fermentum. Maecenas faucibus mollis interdum. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p>
+                </div>
+            `;
+            
+            // Append elements
+            modalContent.appendChild(closeBtn);
+            modalContent.appendChild(articleContent);
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+            
+            // Prevent body scrolling
+            document.body.style.overflow = 'hidden';
+            
+            // Animate in
+            setTimeout(() => {
+                modal.style.opacity = '1';
+                modalContent.style.transform = 'translateY(0)';
+            }, 10);
+            
+            // Close on click outside
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modalContent.style.transform = 'translateY(20px)';
+                    modal.style.opacity = '0';
+                    setTimeout(() => {
+                        document.body.removeChild(modal);
+                        document.body.style.overflow = 'auto';
+                    }, 300);
+                }
+            });
+        }
     }
     
     // Initialize animations after preloader

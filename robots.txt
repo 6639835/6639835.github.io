@@ -1,0 +1,6 @@
+# robots.txt for 6639835.github.io
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://6639835.github.io/sitemap.xml 
