@@ -588,6 +588,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (contactForm) {
             contactForm.addEventListener('submit', function(e) {
+                // Prevent default form submission
                 e.preventDefault();
                 
                 const name = document.getElementById('name');
@@ -605,17 +606,41 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
                 
-                // Simulate form submission
+                // Show loading state
                 const submitBtn = contactForm.querySelector('.submit-btn');
-                submitBtn.textContent = 'Sending...';
+                const originalBtnText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
                 submitBtn.disabled = true;
                 
-                setTimeout(() => {
-                    showFormMessage('Message sent successfully!', 'success');
-                    contactForm.reset();
-                    submitBtn.textContent = 'Send Message';
+                // Get form data
+                const formData = new FormData(contactForm);
+                
+                // Submit form with fetch API
+                fetch(contactForm.action, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Show success message
+                        showFormMessage('Your message has been sent successfully!', 'success');
+                        // Reset form
+                        contactForm.reset();
+                    } else {
+                        // Show error message
+                        showFormMessage('There was a problem sending your message. Please try again.', 'error');
+                    }
+                })
+                .catch(error => {
+                    showFormMessage('There was a problem sending your message. Please try again.', 'error');
+                    console.error('Error:', error);
+                })
+                .finally(() => {
+                    // Reset button state
+                    submitBtn.innerHTML = originalBtnText;
                     submitBtn.disabled = false;
-                }, 1500);
+                });
             });
         }
     }
