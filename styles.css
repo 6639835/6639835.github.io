@@ -1021,6 +1021,7 @@ footer {
 .primary-btn {
     background: var(--accent);
     color: var(--dark);
+    font-weight: 600;
 }
 
 .secondary-btn {
@@ -1741,13 +1742,15 @@ body.theme-transition * {
 }
 
 [data-theme="light"] button.primary-btn {
-    background: linear-gradient(135deg, var(--accent) 0%, #0062cc 100%);
-    box-shadow: 0 4px 15px rgba(var(--accent-rgb), 0.3);
+    background: var(--accent);
+    color: #ffffff;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(var(--accent-rgb), 0.4);
 }
 
 [data-theme="light"] button.primary-btn:hover {
-    box-shadow: 0 6px 20px rgba(var(--accent-rgb), 0.4);
-    background: linear-gradient(135deg, #004494 0%, var(--accent) 100%);
+    background: var(--button-hover);
+    box-shadow: 0 6px 20px rgba(var(--accent-rgb), 0.6);
 }
 
 [data-theme="light"] .about-highlights {
@@ -3020,4 +3023,16 @@ html.theme-transition *:after {
 
 [data-theme="light"] .article-text li::before {
     color: var(--accent);
+}
+
+[data-theme="light"] .primary-btn {
+    background: var(--accent);
+    color: #ffffff;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(var(--accent-rgb), 0.4);
+}
+
+[data-theme="light"] .primary-btn:hover {
+    background: var(--button-hover);
+    box-shadow: 0 6px 20px rgba(var(--accent-rgb), 0.6);
 }
