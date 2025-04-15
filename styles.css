@@ -1424,69 +1424,9 @@ footer {
     transition: all 0.1s ease;
 }
 
-.cursor-dot {
-    width: 8px;
-    height: 8px;
-    background-color: var(--accent);
-    border-radius: 50%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    transform: translate(-50%, -50%);
-    z-index: 9999;
-    pointer-events: none;
-    transition: width 0.2s, height 0.2s, background-color 0.2s;
-}
-
-.cursor-outline {
-    width: 40px;
-    height: 40px;
-    border: 2px solid var(--accent);
-    border-radius: 50%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    transform: translate(-50%, -50%);
-    z-index: 9998;
-    pointer-events: none;
-    transition: all 0.1s ease;
-    opacity: 0.5;
-}
-
-.cursor-hover .cursor-dot {
-    width: 12px;
-    height: 12px;
-    background-color: #fff;
-}
-
-.cursor-hover .cursor-outline {
-    width: 60px;
-    height: 60px;
-    background-color: rgba(var(--accent-rgb), 0.1);
-    border-color: #fff;
-    opacity: 0.8;
-}
-
-[data-theme="light"] .cursor-dot {
-    background-color: var(--accent);
-}
-
-[data-theme="light"] .cursor-outline {
-    border-color: var(--accent);
-}
-
-[data-theme="light"] .cursor-hover .cursor-dot {
-    background-color: var(--dark);
-}
-
-[data-theme="light"] .cursor-hover .cursor-outline {
-    border-color: var(--dark);
-    background-color: rgba(var(--accent-rgb), 0.1);
-}
-
 /* Hide custom cursor on mobile */
 @media (max-width: 768px) {
-    .cursor-dot, .cursor-outline {
+    .cursor-ring, .trail-dot {
         display: none;
     }
 }
@@ -3035,4 +2975,133 @@ html.theme-transition *:after {
 [data-theme="light"] .primary-btn:hover {
     background: var(--button-hover);
     box-shadow: 0 6px 20px rgba(var(--accent-rgb), 0.6);
+}
+
+/* Custom Cursor */
+.custom-cursor {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: difference;
+    transition: all 0.1s ease;
+}
+
+.cursor-ring {
+    width: 30px;
+    height: 30px;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    pointer-events: none;
+    transition: width 0.3s, height 0.3s, border-color 0.3s;
+    mix-blend-mode: difference;
+}
+
+.trailing-dots {
+    position: fixed;
+    z-index: 9998;
+    pointer-events: none;
+}
+
+.trail-dot {
+    width: 4px;
+    height: 4px;
+    background-color: var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    transition: transform 0.1s linear, opacity 0.2s ease;
+}
+
+.cursor-hover .cursor-ring {
+    width: 50px;
+    height: 50px;
+    border-color: #fff;
+    border-width: 3px;
+    transition: all 0.2s ease;
+}
+
+.cursor-hover .trail-dot {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0.8 !important;
+}
+
+.cursor-enlarged .cursor-ring {
+    transform: translate(-50%, -50%) scale(0.8);
+    background-color: rgba(var(--accent-rgb), 0.1);
+}
+
+[data-theme="light"] .cursor-ring {
+    border-color: var(--accent);
+}
+
+[data-theme="light"] .trail-dot {
+    background-color: var(--accent);
+}
+
+[data-theme="light"] .cursor-hover .cursor-ring {
+    border-color: var(--dark);
+}
+
+[data-theme="light"] .cursor-hover .trail-dot {
+    background-color: var(--dark);
+}
+
+/* Hide custom cursor on mobile */
+@media (max-width: 768px) {
+    .cursor-ring, .trail-dot {
+        display: none;
+    }
+}
+
+/* Mobile device optimizations */
+.mobile-device {
+    cursor: auto !important;
+}
+
+.mobile-device .custom-cursor {
+    display: none !important;
+}
+
+.mobile-device .primary-btn, 
+.mobile-device .secondary-btn, 
+.mobile-device .submit-btn,
+.mobile-device .social-icon,
+.mobile-device .skill-card,
+.mobile-device .project-card {
+    transform: none !important;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease !important;
+}
+
+.cursor-dot {
+    display: none; /* Hide old cursor dot */
+}
+
+.cursor-outline {
+    display: none; /* Hide old cursor outline */
+}
+
+.cursor-hover .cursor-dot,
+[data-theme="light"] .cursor-dot,
+[data-theme="light"] .cursor-outline,
+[data-theme="light"] .cursor-hover .cursor-dot,
+[data-theme="light"] .cursor-hover .cursor-outline {
+    display: none; /* Hide all old cursor styles */
+}
+
+@media (max-width: 768px) {
+    .cursor-dot, .cursor-outline {
+        display: none;
+    }
+    
+    .cursor-ring, .trail-dot {
+        display: none;
+    }
 }

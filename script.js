@@ -677,14 +677,24 @@ document.addEventListener('DOMContentLoaded', () => {
         const cursor = document.createElement('div');
         cursor.className = 'custom-cursor';
         
-        const cursorDot = document.createElement('div');
-        cursorDot.className = 'cursor-dot';
+        // Create main cursor ring
+        const cursorRing = document.createElement('div');
+        cursorRing.className = 'cursor-ring';
         
-        const cursorOutline = document.createElement('div');
-        cursorOutline.className = 'cursor-outline';
+        // Create trailing dots for effect
+        const trailingDots = document.createElement('div');
+        trailingDots.className = 'trailing-dots';
         
-        cursor.appendChild(cursorDot);
-        cursor.appendChild(cursorOutline);
+        // Create 5 dots for the trail
+        for (let i = 0; i < 5; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'trail-dot';
+            dot.style.animationDelay = `${i * 0.1}s`;
+            trailingDots.appendChild(dot);
+        }
+        
+        cursor.appendChild(cursorRing);
+        cursor.appendChild(trailingDots);
         document.body.appendChild(cursor);
         
         // Hide default cursor
@@ -692,6 +702,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
         let cursorVisible = true;
         let cursorEnlarged = false;
+        
+        // Create an array to store previous mouse positions for trail
+        const mousePositions = [];
         
         // Set up event listeners
         document.addEventListener('mousemove', animateCursor);
@@ -718,15 +731,27 @@ document.addEventListener('DOMContentLoaded', () => {
         // Animate cursor based on mouse position
         function animateCursor(e) {
             if (cursorVisible) {
-                // Position cursor dot at cursor position
-                cursorDot.style.top = `${e.clientY}px`;
-                cursorDot.style.left = `${e.clientX}px`;
+                // Store current mouse position
+                mousePositions.unshift({ x: e.clientX, y: e.clientY });
                 
-                // Add slight delay to cursor outline
-                setTimeout(() => {
-                    cursorOutline.style.top = `${e.clientY}px`;
-                    cursorOutline.style.left = `${e.clientX}px`;
-                }, 80);
+                // Limit the array to only store positions needed for the trail
+                if (mousePositions.length > 5) {
+                    mousePositions.pop();
+                }
+                
+                // Position cursor ring at cursor position
+                cursorRing.style.top = `${e.clientY}px`;
+                cursorRing.style.left = `${e.clientX}px`;
+                
+                // Update positions of trailing dots
+                const trailDots = document.querySelectorAll('.trail-dot');
+                trailDots.forEach((dot, index) => {
+                    if (mousePositions[index]) {
+                        dot.style.top = `${mousePositions[index].y}px`;
+                        dot.style.left = `${mousePositions[index].x}px`;
+                        dot.style.opacity = 1 - (index * 0.2); // Fade out as they trail
+                    }
+                });
             }
         }
         
