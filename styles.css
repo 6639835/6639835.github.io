@@ -1469,6 +1469,200 @@ html {
     color: var(--accent);
 }
 
+/* Skip Link for Accessibility */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: var(--accent);
+    color: var(--dark);
+    padding: 8px;
+    text-decoration: none;
+    border-radius: 0 0 4px 4px;
+    font-weight: 600;
+    z-index: 10000;
+    transform: translateY(-100%);
+    transition: transform 0.3s ease;
+}
+
+.skip-link:focus {
+    top: 0;
+    transform: translateY(0);
+}
+
+/* Form Error Messages */
+.error-message {
+    color: #ff6b6b;
+    font-size: 0.85rem;
+    margin-top: 4px;
+    min-height: 20px;
+    display: block;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.error-message.show {
+    opacity: 1;
+}
+
+.form-group input.error,
+.form-group textarea.error {
+    border-color: #ff6b6b;
+    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.15);
+}
+
+/* Focus indicators for better accessibility */
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    :root {
+        --accent: #00ff88;
+        --text: #ffffff;
+        --background: #000000;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    
+    .preloader {
+        display: none !important;
+    }
+    
+    #typing-text {
+        border-right: none !important;
+    }
+}
+
+/* Typing cursor animation */
+#typing-text {
+    animation: blink-cursor 1.5s infinite;
+    padding-right: 3px;
+}
+
+@keyframes blink-cursor {
+    0%, 50% {
+        border-right-color: var(--accent);
+    }
+    51%, 100% {
+        border-right-color: transparent;
+    }
+}
+
+/* Ripple animation for interactive cards */
+@keyframes ripple {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* Enhanced card hover states */
+.project-card,
+.skill-card,
+.blog-card {
+    will-change: transform;
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+/* Performance optimizations for animations */
+.project-card,
+.skill-card,
+.blog-card,
+.parallax-element {
+    transform: translateZ(0);
+}
+
+/* Magnetic hover effect for interactive elements */
+.magnetic-hover {
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.magnetic-hover:hover {
+    transform: translateY(-5px) scale(1.02);
+}
+
+/* Smooth scrolling enhancements */
+html {
+    scroll-behavior: smooth;
+}
+
+@supports (scroll-behavior: smooth) {
+    html {
+        scroll-behavior: smooth;
+    }
+}
+
+/* Loading state improvements */
+.loading-skeleton {
+    background: linear-gradient(90deg, var(--card-bg) 25%, var(--border) 50%, var(--card-bg) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Enhanced focus states for better accessibility */
+.primary-btn:focus-visible,
+.secondary-btn:focus-visible,
+.submit-btn:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 5px rgba(var(--accent-rgb), 0.2);
+}
+
+/* Print styles */
+@media print {
+    .navbar,
+    .back-to-top,
+    .preloader,
+    #particles-js {
+        display: none !important;
+    }
+    
+    * {
+        background: white !important;
+        color: black !important;
+        box-shadow: none !important;
+    }
+    
+    .section {
+        page-break-inside: avoid;
+    }
+    
+    h1, h2, h3 {
+        page-break-after: avoid;
+    }
+}
+
 /* Loading Animation for Page */
 .loading {
     overflow: hidden;

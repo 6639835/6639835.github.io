@@ -4,19 +4,79 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>6639835 - Software Engineer & Developer</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Resource hints for performance -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="//github-readme-stats.vercel.app">
+    <link rel="dns-prefetch" href="//github-readme-streak-stats.herokuapp.com">
+    
+    <!-- Preconnect to critical external domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Preload critical CSS -->
+    <link rel="preload" href="styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="styles.css"></noscript>
+    
+    <!-- Load non-critical CSS asynchronously -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    
+    <!-- Load fonts optimally -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"></noscript>
+    
+    <!-- Preload and defer JavaScript -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js" as="script">
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js" defer></script>
-    <meta name="description" content="Portfolio of Justin, a software engineer and developer specializing in web development and aviation solutions">
-    <meta name="keywords" content="software engineer, developer, web development, JavaScript, Python, React">
+    <meta name="description" content="Portfolio of Justin - Full-stack software engineer specializing in web development, cloud solutions, and aviation technology. Expert in Python, JavaScript, React, and modern web technologies.">
+    <meta name="keywords" content="software engineer, full-stack developer, web development, JavaScript, Python, React, Node.js, aviation technology, cloud computing, portfolio">
+    <meta name="author" content="Justin (6639835)">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+    <meta name="revisit-after" content="7 days">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <!-- Open Graph meta tags for better social sharing -->
-    <meta property="og:title" content="Justin - Software Engineer & Developer">
-    <meta property="og:description" content="Portfolio of Justin, a software engineer and developer specializing in web development and aviation solutions">
+    <link rel="canonical" href="https://6639835.github.io/">
+    
+    <!-- Enhanced Open Graph meta tags for better social sharing -->
+    <meta property="og:title" content="Justin - Full-Stack Software Engineer & Developer">
+    <meta property="og:description" content="Experienced software engineer creating scalable web applications and aviation solutions. Specializing in Python, JavaScript, React, and cloud technologies.">
     <meta property="og:type" content="website">
+    <meta property="og:url" content="https://6639835.github.io/">
+    <meta property="og:site_name" content="Justin's Portfolio">
+    <meta property="og:locale" content="en_US">
+    
+    <!-- Twitter Card meta tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Justin - Full-Stack Software Engineer">
+    <meta name="twitter:description" content="Portfolio showcasing web development projects, aviation solutions, and modern software engineering expertise.">
+    
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Justin",
+      "jobTitle": "Software Engineer & Developer",
+      "description": "Full-stack software engineer specializing in web development and aviation solutions",
+      "url": "https://6639835.github.io/",
+      "sameAs": [
+        "https://github.com/6639835",
+        "https://linkedin.com/in/6639835"
+      ],
+      "knowsAbout": ["Python", "JavaScript", "React", "Node.js", "Web Development", "Aviation Technology", "Cloud Computing"],
+      "alumniOf": {
+        "@type": "Organization",
+        "name": "Software Engineering"
+      }
+    }
+    </script>
 </head>
 <body>
+    <!-- Skip link for accessibility -->
+    <a href="#main-content" class="skip-link" aria-label="Skip to main content">Skip to main content</a>
+    
     <!-- Preloader -->
     <div class="preloader">
         <div class="loader">
@@ -27,22 +87,22 @@
     </div>
 
     <div id="particles-js"></div>
-    <nav class="navbar">
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
         <div class="container nav-container">
             <div class="logo">
-                <a href="#">6639835</a>
+                <a href="#" aria-label="Home - 6639835 Portfolio">6639835</a>
             </div>
-            <div class="nav-toggle">
+            <button class="nav-toggle" aria-label="Toggle mobile navigation" aria-expanded="false">
                 <i class="fas fa-bars"></i>
-            </div>
-            <ul class="nav-menu">
-                <li><a href="#about">About</a></li>
-                <li><a href="#skills">Skills</a></li>
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#blog">Blog</a></li>
-                <li><a href="#testimonials">Testimonials</a></li>
-                <li><a href="#github-stats">Stats</a></li>
-                <li><a href="#contact">Contact</a></li>
+            </button>
+            <ul class="nav-menu" role="menubar">
+                <li role="menuitem"><a href="#about" aria-label="Navigate to About section">About</a></li>
+                <li role="menuitem"><a href="#skills" aria-label="Navigate to Skills section">Skills</a></li>
+                <li role="menuitem"><a href="#projects" aria-label="Navigate to Projects section">Projects</a></li>
+                <li role="menuitem"><a href="#blog" aria-label="Navigate to Blog section">Blog</a></li>
+                <li role="menuitem"><a href="#testimonials" aria-label="Navigate to Testimonials section">Testimonials</a></li>
+                <li role="menuitem"><a href="#github-stats" aria-label="Navigate to GitHub Statistics section">Stats</a></li>
+                <li role="menuitem"><a href="#contact" aria-label="Navigate to Contact section">Contact</a></li>
                 <li>
                     <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark/light mode">
                         <i id="theme-icon" class="fas fa-sun"></i>
@@ -52,12 +112,12 @@
         </div>
     </nav>
 
-    <header>
+    <header role="banner" aria-label="Hero section">
         <div class="container">
             <div class="profile">
                 <div class="profile-content">
                     <h1>Hello there! <span class="wave">👋</span> I'm <span class="highlight">Justin</span></h1>
-                    <h2>Software Engineer & Developer</h2>
+                    <h2 id="typing-text">Software Engineer & Developer</h2>
                     <p class="tagline">Transforming complex problems into elegant, scalable solutions</p>
                     <div class="cta-buttons">
                         <a href="#projects" class="primary-btn"><i class="fas fa-code"></i> View Projects</a>
@@ -82,9 +142,10 @@
         </div>
     </header>
 
-    <section id="about" class="section">
+    <main id="main-content">
+    <section id="about" class="section" aria-labelledby="about-title">
         <div class="container">
-            <h2 class="section-title">About Me</h2>
+            <h2 id="about-title" class="section-title">About Me</h2>
             <div class="about-content">
                 <div class="about-grid">
                     <div class="about-text">
@@ -115,9 +176,9 @@
         </div>
     </section>
 
-    <section id="skills" class="section">
+    <section id="skills" class="section" role="main" aria-labelledby="skills-title">
         <div class="container">
-            <h2 class="section-title">Technical Skills</h2>
+            <h2 id="skills-title" class="section-title">Technical Skills</h2>
             
             <div class="skills-category">
                 <h3>Languages</h3>
@@ -263,9 +324,9 @@
         </div>
     </section>
 
-    <section id="projects" class="section">
+    <section id="projects" class="section" role="main" aria-labelledby="projects-title">
         <div class="container">
-            <h2 class="section-title">Featured Projects</h2>
+            <h2 id="projects-title" class="section-title">Featured Projects</h2>
             
             <div class="project-filter">
                 <button class="filter-btn active" data-filter="all">All</button>
@@ -406,7 +467,7 @@
             <div class="blog-grid">
                 <article class="blog-card">
                     <div class="blog-image">
-                        <img src="https://via.placeholder.com/600x400" alt="Machine Learning Basics">
+                        <img src="https://via.placeholder.com/600x400" alt="Machine Learning Basics" loading="lazy" decoding="async">
                         <div class="blog-date">
                             <span class="day">15</span>
                             <span class="month">Jun</span>
@@ -425,7 +486,7 @@
                 
                 <article class="blog-card">
                     <div class="blog-image">
-                        <img src="https://via.placeholder.com/600x400" alt="React Performance">
+                        <img src="https://via.placeholder.com/600x400" alt="React Performance" loading="lazy" decoding="async">
                         <div class="blog-date">
                             <span class="day">28</span>
                             <span class="month">May</span>
@@ -444,7 +505,7 @@
                 
                 <article class="blog-card">
                     <div class="blog-image">
-                        <img src="https://via.placeholder.com/600x400" alt="Cloud Architecture">
+                        <img src="https://via.placeholder.com/600x400" alt="Cloud Architecture" loading="lazy" decoding="async">
                         <div class="blog-date">
                             <span class="day">10</span>
                             <span class="month">May</span>
@@ -481,7 +542,7 @@
                     </div>
                     <div class="testimonial-author">
                         <div class="testimonial-avatar">
-                            <img src="https://via.placeholder.com/60x60" alt="Client 1">
+                            <img src="https://via.placeholder.com/60x60" alt="Sarah Johnson - CTO at TechStartup" loading="lazy" decoding="async">
                         </div>
                         <div class="testimonial-info">
                             <h4 class="author-name">Sarah Johnson</h4>
@@ -497,7 +558,7 @@
                     </div>
                     <div class="testimonial-author">
                         <div class="testimonial-avatar">
-                            <img src="https://via.placeholder.com/60x60" alt="Client 2">
+                            <img src="https://via.placeholder.com/60x60" alt="Michael Chen - Project Manager at DevInnovate" loading="lazy" decoding="async">
                         </div>
                         <div class="testimonial-info">
                             <h4 class="author-name">Michael Chen</h4>
@@ -513,7 +574,7 @@
                     </div>
                     <div class="testimonial-author">
                         <div class="testimonial-avatar">
-                            <img src="https://via.placeholder.com/60x60" alt="Client 3">
+                            <img src="https://via.placeholder.com/60x60" alt="Emily Rodriguez - Product Owner at SkyData" loading="lazy" decoding="async">
                         </div>
                         <div class="testimonial-info">
                             <h4 class="author-name">Emily Rodriguez</h4>
@@ -556,16 +617,19 @@
                     <input type="checkbox" name="botcheck" style="display: none;">
                     
                     <div class="form-group">
-                        <label for="name">Name</label>
-                        <input type="text" id="name" name="name" placeholder="Your name" required>
+                        <label for="name">Name <span aria-label="required">*</span></label>
+                        <input type="text" id="name" name="name" placeholder="Your full name" required aria-describedby="name-error" autocomplete="name">
+                        <div id="name-error" class="error-message" role="alert" aria-live="polite"></div>
                     </div>
                     <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" name="email" placeholder="Your email" required>
+                        <label for="email">Email <span aria-label="required">*</span></label>
+                        <input type="email" id="email" name="email" placeholder="your.email@example.com" required aria-describedby="email-error" autocomplete="email">
+                        <div id="email-error" class="error-message" role="alert" aria-live="polite"></div>
                     </div>
                     <div class="form-group">
-                        <label for="message">Message</label>
-                        <textarea id="message" name="message" rows="5" placeholder="Your message" required></textarea>
+                        <label for="message">Message <span aria-label="required">*</span></label>
+                        <textarea id="message" name="message" rows="5" placeholder="Tell me about your project or question..." required aria-describedby="message-error"></textarea>
+                        <div id="message-error" class="error-message" role="alert" aria-live="polite"></div>
                     </div>
                     <button type="submit" class="submit-btn">
                         <i class="fas fa-paper-plane"></i> Send Message
@@ -590,8 +654,9 @@
             </div>
         </div>
     </section>
+    </main>
 
-    <footer>
+    <footer role="contentinfo">
         <div class="container">
             <p>&copy; 2025 Justin | Software Engineer & Developer. All rights reserved.</p>
         </div>
@@ -601,6 +666,32 @@
         <i class="fas fa-arrow-up"></i>
     </button>
     
-    <script src="script.js"></script>
+    <!-- Load main script with performance optimizations -->
+    <script src="script.js" defer></script>
+    
+    <!-- Performance monitoring script -->
+    <script>
+        // Monitor Core Web Vitals
+        if ('web-vital' in window) {
+            import('https://unpkg.com/web-vitals').then(({getCLS, getFID, getFCP, getLCP, getTTFB}) => {
+                getCLS(console.log);
+                getFID(console.log);
+                getFCP(console.log);
+                getLCP(console.log);
+                getTTFB(console.log);
+            });
+        }
+        
+        // Service Worker registration for caching
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js').then(function(registration) {
+                    console.log('ServiceWorker registration successful');
+                }, function(err) {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+    </script>
 </body>
 </html> 

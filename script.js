@@ -197,7 +197,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (navToggle) {
             navToggle.addEventListener('click', () => {
+                const isExpanded = navMenu.classList.contains('active');
                 navMenu.classList.toggle('active');
+                
+                // Update ARIA attributes for accessibility
+                navToggle.setAttribute('aria-expanded', !isExpanded);
                 
                 // Change icon
                 const icon = navToggle.querySelector('i');
@@ -587,6 +591,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const contactForm = document.querySelector('.contact-form');
         
         if (contactForm) {
+            // Add real-time validation
+            const inputs = contactForm.querySelectorAll('input[required], textarea[required]');
+            inputs.forEach(input => {
+                input.addEventListener('blur', () => validateField(input));
+                input.addEventListener('input', () => clearFieldError(input));
+            });
+            
             contactForm.addEventListener('submit', function(e) {
                 // Prevent default form submission
                 e.preventDefault();
@@ -595,14 +606,44 @@ document.addEventListener('DOMContentLoaded', () => {
                 const email = document.getElementById('email');
                 const message = document.getElementById('message');
                 
-                // Simple validation
-                if (!name.value.trim() || !email.value.trim() || !message.value.trim()) {
-                    showFormMessage('Please fill out all fields.', 'error');
-                    return;
+                // Clear previous errors
+                clearAllErrors();
+                
+                let hasErrors = false;
+                
+                // Validate name
+                if (!name.value.trim()) {
+                    showFieldError(name, 'Name is required');
+                    hasErrors = true;
+                } else if (name.value.trim().length < 2) {
+                    showFieldError(name, 'Name must be at least 2 characters');
+                    hasErrors = true;
                 }
                 
-                if (!isValidEmail(email.value)) {
-                    showFormMessage('Please enter a valid email address.', 'error');
+                // Validate email
+                if (!email.value.trim()) {
+                    showFieldError(email, 'Email is required');
+                    hasErrors = true;
+                } else if (!isValidEmail(email.value)) {
+                    showFieldError(email, 'Please enter a valid email address');
+                    hasErrors = true;
+                }
+                
+                // Validate message
+                if (!message.value.trim()) {
+                    showFieldError(message, 'Message is required');
+                    hasErrors = true;
+                } else if (message.value.trim().length < 10) {
+                    showFieldError(message, 'Message must be at least 10 characters');
+                    hasErrors = true;
+                }
+                
+                if (hasErrors) {
+                    // Focus on first error field
+                    const firstError = contactForm.querySelector('.error');
+                    if (firstError) {
+                        firstError.focus();
+                    }
                     return;
                 }
                 
@@ -650,6 +691,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const messageElement = document.querySelector('.form-message') || document.createElement('div');
         messageElement.className = `form-message ${type}`;
         messageElement.textContent = text;
+        messageElement.setAttribute('role', 'alert');
+        messageElement.setAttribute('aria-live', 'polite');
         
         const contactForm = document.querySelector('.contact-form');
         if (!document.querySelector('.form-message')) {
@@ -657,8 +700,90 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         setTimeout(() => {
-            messageElement.remove();
-        }, 3000);
+            if (messageElement.parentNode) {
+                messageElement.remove();
+            }
+        }, 5000);
+    }
+    
+    // Show field-specific error
+    function showFieldError(field, message) {
+        const errorElement = document.getElementById(field.getAttribute('aria-describedby'));
+        if (errorElement) {
+            errorElement.textContent = message;
+            errorElement.classList.add('show');
+        }
+        field.classList.add('error');
+        field.setAttribute('aria-invalid', 'true');
+    }
+    
+    // Clear field error
+    function clearFieldError(field) {
+        const errorElement = document.getElementById(field.getAttribute('aria-describedby'));
+        if (errorElement) {
+            errorElement.textContent = '';
+            errorElement.classList.remove('show');
+        }
+        field.classList.remove('error');
+        field.setAttribute('aria-invalid', 'false');
+    }
+    
+    // Clear all form errors
+    function clearAllErrors() {
+        const contactForm = document.querySelector('.contact-form');
+        const errorMessages = contactForm.querySelectorAll('.error-message');
+        const errorFields = contactForm.querySelectorAll('.error');
+        
+        errorMessages.forEach(msg => {
+            msg.textContent = '';
+            msg.classList.remove('show');
+        });
+        
+        errorFields.forEach(field => {
+            field.classList.remove('error');
+            field.setAttribute('aria-invalid', 'false');
+        });
+    }
+    
+    // Validate individual field
+    function validateField(field) {
+        const value = field.value.trim();
+        
+        switch (field.type) {
+            case 'text':
+                if (field.id === 'name') {
+                    if (!value) {
+                        showFieldError(field, 'Name is required');
+                        return false;
+                    } else if (value.length < 2) {
+                        showFieldError(field, 'Name must be at least 2 characters');
+                        return false;
+                    }
+                }
+                break;
+            case 'email':
+                if (!value) {
+                    showFieldError(field, 'Email is required');
+                    return false;
+                } else if (!isValidEmail(value)) {
+                    showFieldError(field, 'Please enter a valid email address');
+                    return false;
+                }
+                break;
+            default:
+                if (field.tagName === 'TEXTAREA') {
+                    if (!value) {
+                        showFieldError(field, 'Message is required');
+                        return false;
+                    } else if (value.length < 10) {
+                        showFieldError(field, 'Message must be at least 10 characters');
+                        return false;
+                    }
+                }
+        }
+        
+        clearFieldError(field);
+        return true;
     }
     
     // Validate email format
@@ -1288,6 +1413,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialize animations after preloader
     function initAnimations() {
+        // Initialize typing effect
+        initTypingEffect();
+        
         // Add a subtle entrance animation to skill cards
         const skillCards = document.querySelectorAll('.skill-card');
         skillCards.forEach((card, index) => {
@@ -1312,6 +1440,165 @@ document.addEventListener('DOMContentLoaded', () => {
                 card.style.opacity = '1';
                 card.style.transform = 'translateY(0)';
             }, 100 + (index * 100));
+        });
+        
+        // Add parallax scrolling effect
+        initParallaxEffect();
+        
+        // Add interactive project card effects
+        initInteractiveCards();
+    }
+    
+    // Initialize typing effect for hero section
+    function initTypingEffect() {
+        const typingElement = document.getElementById('typing-text');
+        if (!typingElement) return;
+        
+        const texts = [
+            'Software Engineer & Developer',
+            'Full-Stack Developer',
+            'Aviation Technology Expert',
+            'Cloud Solutions Architect',
+            'Problem Solver & Innovator'
+        ];
+        
+        let textIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        let typingSpeed = 150;
+        
+        function typeText() {
+            const currentText = texts[textIndex];
+            
+            if (isDeleting) {
+                typingElement.textContent = currentText.substring(0, charIndex - 1);
+                charIndex--;
+                typingSpeed = 75;
+            } else {
+                typingElement.textContent = currentText.substring(0, charIndex + 1);
+                charIndex++;
+                typingSpeed = 150;
+            }
+            
+            // Add cursor effect
+            typingElement.style.borderRight = '2px solid var(--accent)';
+            
+            if (!isDeleting && charIndex === currentText.length) {
+                // Pause at end of text
+                setTimeout(() => {
+                    isDeleting = true;
+                    typeText();
+                }, 2000);
+                return;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                textIndex = (textIndex + 1) % texts.length;
+            }
+            
+            setTimeout(typeText, typingSpeed);
+        }
+        
+        // Start typing effect after a delay
+        setTimeout(typeText, 1000);
+    }
+    
+    // Initialize parallax scrolling effect
+    function initParallaxEffect() {
+        if (isMobile) return; // Skip on mobile for performance
+        
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const header = document.querySelector('header');
+            const parallaxElements = document.querySelectorAll('.parallax-element');
+            
+            // Parallax effect for header
+            if (header) {
+                header.style.transform = `translateY(${scrolled * 0.5}px)`;
+            }
+            
+            // Parallax effect for other elements
+            parallaxElements.forEach((element, index) => {
+                const speed = 0.1 + (index * 0.05);
+                element.style.transform = `translateY(${scrolled * speed}px)`;
+            });
+        });
+    }
+    
+    // Initialize interactive card effects
+    function initInteractiveCards() {
+        const cards = document.querySelectorAll('.project-card, .skill-card, .blog-card');
+        
+        cards.forEach(card => {
+            // Add magnetic effect on hover
+            card.addEventListener('mouseenter', function() {
+                this.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+            });
+            
+            card.addEventListener('mousemove', function(e) {
+                if (isMobile) return;
+                
+                const rect = this.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (y - centerY) / 20;
+                const rotateY = (centerX - x) / 20;
+                
+                this.style.transform = `
+                    perspective(1000px) 
+                    rotateX(${rotateX}deg) 
+                    rotateY(${rotateY}deg) 
+                    scale3d(1.05, 1.05, 1.05)
+                `;
+                
+                // Add dynamic shadow
+                const shadowX = (x - centerX) / 5;
+                const shadowY = (y - centerY) / 5;
+                this.style.boxShadow = `
+                    ${shadowX}px ${shadowY}px 25px rgba(0, 0, 0, 0.2),
+                    0 0 0 1px rgba(var(--accent-rgb), 0.1)
+                `;
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+                this.style.boxShadow = '';
+                this.style.transition = 'all 0.3s ease';
+            });
+            
+            // Add click ripple effect
+            card.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.cssText = `
+                    position: absolute;
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${x}px;
+                    top: ${y}px;
+                    background: radial-gradient(circle, rgba(var(--accent-rgb), 0.3) 0%, transparent 70%);
+                    border-radius: 50%;
+                    transform: scale(0);
+                    animation: ripple 0.6s ease-out;
+                    pointer-events: none;
+                    z-index: 1;
+                `;
+                
+                this.style.position = 'relative';
+                this.style.overflow = 'hidden';
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
         });
     }
 }); 

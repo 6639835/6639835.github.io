@@ -1,6 +1,36 @@
 # robots.txt for 6639835.github.io
 User-agent: *
 Allow: /
+Disallow: /private/
+Disallow: /*.pdf$
+Disallow: /temp/
+
+# Allow major search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+# Block unwanted crawlers
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+# Crawl delay for polite crawling
+Crawl-delay: 1
 
 # Sitemap location
-Sitemap: https://6639835.github.io/sitemap.xml 
+Sitemap: https://6639835.github.io/sitemap.xml
+
+# Additional information
+# Website: https://6639835.github.io/
+# Contact: 6639835@gmail.com 
