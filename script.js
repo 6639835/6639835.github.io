@@ -1,7 +1,42 @@
+// Throttle utility function for performance optimization
+function throttle(func, delay) {
+    let timeoutId;
+    let lastExecTime = 0;
+    return function (...args) {
+        const currentTime = Date.now();
+        
+        if (currentTime - lastExecTime > delay) {
+            func.apply(this, args);
+            lastExecTime = currentTime;
+        } else {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                func.apply(this, args);
+                lastExecTime = Date.now();
+            }, delay - (currentTime - lastExecTime));
+        }
+    };
+}
+
 // Wait for DOM to fully load
 document.addEventListener('DOMContentLoaded', () => {
+    // Cache frequently accessed DOM elements for better performance
+    const domCache = {
+        preloader: document.querySelector('.preloader'),
+        navbar: document.querySelector('.navbar'),
+        backToTopButton: document.querySelector('.back-to-top'),
+        themeToggle: document.getElementById('theme-toggle'),
+        themeIcon: document.getElementById('theme-icon'),
+        navMenu: document.querySelector('.nav-menu'),
+        navToggle: document.querySelector('.nav-toggle'),
+        sections: document.querySelectorAll('.section'),
+        navLinks: document.querySelectorAll('.nav-menu a'),
+        body: document.body,
+        documentElement: document.documentElement
+    };
+    
     // Handle preloader
-    const preloader = document.querySelector('.preloader');
+    const preloader = domCache.preloader;
     
     // Hide preloader after content loaded
     window.addEventListener('load', () => {
@@ -27,22 +62,28 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         // Add mobile class to body for specific mobile styling
-        document.body.classList.add('mobile-device');
+        domCache.body.classList.add('mobile-device');
         
         // Ensure cursor is visible on mobile
-        document.body.style.cursor = 'auto';
+        domCache.body.style.cursor = 'auto';
         
         // Initialize mobile-specific optimizations
         initMobileOptimizations();
     } else {
-        // Initialize particles on desktop only
-        initializeParticles();
+        // Initialize particles on desktop only - delayed for better initial load
+        setTimeout(() => {
+            initializeParticles();
+        }, 1000);
         
-        // Setup custom cursor on desktop
-        setupCustomCursor();
+        // Setup custom cursor on desktop - delayed
+        setTimeout(() => {
+            setupCustomCursor();
+        }, 1500);
         
-        // Initialize tilt effects for cards on desktop
-        initTiltEffects();
+        // Initialize tilt effects for cards on desktop - delayed
+        setTimeout(() => {
+            initTiltEffects();
+        }, 2000);
     }
 
     // Add a loading animation while the page initializes
@@ -89,11 +130,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize testimonials slider
     initTestimonialsSlider();
     
-    // Initialize project search
-    initProjectSearch();
+    // Initialize project search - deferred for better performance
+    setTimeout(() => {
+        initProjectSearch();
+    }, 2500);
     
-    // Initialize blog functionality
-    initBlogFunctionality();
+    // Initialize blog functionality - deferred
+    setTimeout(() => {
+        initBlogFunctionality();
+    }, 3000);
     
     // Initialize particles.js with enhanced configuration
     if (typeof particlesJS !== 'undefined') {
@@ -103,10 +148,10 @@ document.addEventListener('DOMContentLoaded', () => {
         particlesJS('particles-js', {
             particles: {
                 number: {
-                    value: 60,
+                    value: 30, // Reduced from 60 for better performance
                     density: {
                         enable: true,
-                        value_area: 900
+                        value_area: 1200 // Increased area for better distribution with fewer particles
                     }
                 },
                 color: {
@@ -120,12 +165,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 },
                 opacity: {
-                    value: 0.2,
-                    random: true,
+                    value: 0.25, // Slightly increased to compensate for fewer particles
+                    random: false, // Disabled random for better performance
                     anim: {
                         enable: true,
-                        speed: 0.8,
-                        opacity_min: 0.1,
+                        speed: 0.5, // Reduced animation speed
+                        opacity_min: 0.15,
                         sync: false
                     }
                 },
@@ -133,31 +178,29 @@ document.addEventListener('DOMContentLoaded', () => {
                     value: 3,
                     random: true,
                     anim: {
-                        enable: true,
-                        speed: 2,
+                        enable: false, // Disabled size animation for better performance
+                        speed: 1,
                         size_min: 0.1,
                         sync: false
                     }
                 },
                 line_linked: {
                     enable: true,
-                    distance: 150,
+                    distance: 120, // Reduced connection distance
                     color: particleColor,
-                    opacity: 0.15,
+                    opacity: 0.2, // Slightly increased opacity
                     width: 1
                 },
                 move: {
                     enable: true,
-                    speed: 0.8,
+                    speed: 0.5, // Reduced speed for smoother performance
                     direction: 'none',
                     random: true,
                     straight: false,
                     out_mode: 'out',
                     bounce: false,
                     attract: {
-                        enable: true,
-                        rotateX: 600,
-                        rotateY: 1200
+                        enable: false // Disabled attract for better performance
                     }
                 }
             },
@@ -169,31 +212,27 @@ document.addEventListener('DOMContentLoaded', () => {
                         mode: 'grab'
                     },
                     onclick: {
-                        enable: true,
-                        mode: 'push'
+                        enable: false // Disabled click interaction for better performance
                     },
                     resize: true
                 },
                 modes: {
                     grab: {
-                        distance: 180,
+                        distance: 140, // Reduced grab distance
                         line_linked: {
-                            opacity: 0.6
+                            opacity: 0.4 // Reduced opacity for subtler effect
                         }
-                    },
-                    push: {
-                        particles_nb: 4
                     }
                 }
             },
-            retina_detect: true
+            retina_detect: false // Disabled for better performance on high-DPI displays
         });
     }
 
     // Initialize mobile navigation menu
     function initMobileNav() {
-        const navToggle = document.querySelector('.nav-toggle');
-        const navMenu = document.querySelector('.nav-menu');
+        const navToggle = domCache.navToggle;
+        const navMenu = domCache.navMenu;
         
         if (navToggle) {
             navToggle.addEventListener('click', () => {
@@ -230,7 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         // Smooth scroll behavior for navigation links
-        const navLinks = document.querySelectorAll('.nav-menu a');
+        const navLinks = domCache.navLinks;
         navLinks.forEach(link => {
             link.addEventListener('click', (e) => {
                 // Close mobile menu if open
@@ -262,12 +301,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize theme toggling
     function initThemeToggle() {
-        const themeToggle = document.getElementById('theme-toggle');
-        const themeIcon = document.getElementById('theme-icon');
+        const themeToggle = domCache.themeToggle;
+        const themeIcon = domCache.themeIcon;
         
         // Check for saved theme preference or use default dark theme
         const savedTheme = localStorage.getItem('theme') || 'dark';
-        document.documentElement.setAttribute('data-theme', savedTheme);
+        domCache.documentElement.setAttribute('data-theme', savedTheme);
         
         // Update icon based on current theme
         updateThemeIcon(savedTheme);
@@ -275,10 +314,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (themeToggle) {
             themeToggle.addEventListener('click', () => {
                 // Add transition class to body for smoother theme switching
-                document.documentElement.classList.add('theme-transition');
+                domCache.documentElement.classList.add('theme-transition');
                 
                 // Toggle theme
-                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const currentTheme = domCache.documentElement.getAttribute('data-theme');
                 const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
                 
                 // Add visual effect for theme change
@@ -301,7 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // Apply theme change
                 setTimeout(() => {
-                    document.documentElement.setAttribute('data-theme', newTheme);
+                    domCache.documentElement.setAttribute('data-theme', newTheme);
                     localStorage.setItem('theme', newTheme);
                     updateThemeIcon(newTheme);
                     
@@ -321,7 +360,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // Remove transition class after theme change is complete
                 setTimeout(() => {
-                    document.documentElement.classList.remove('theme-transition');
+                    domCache.documentElement.classList.remove('theme-transition');
                 }, 1000);
             });
         }
@@ -354,7 +393,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialize sticky navbar behavior
     function initStickyNavbar() {
-        const navbar = document.querySelector('.navbar');
+        const navbar = domCache.navbar;
         
         if (navbar) {
             // Check initial scroll position
@@ -362,14 +401,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 navbar.classList.add('scrolled');
             }
             
-            // Add event listener for scroll
-            window.addEventListener('scroll', () => {
+            // Add throttled event listener for scroll
+            const handleScroll = throttle(() => {
                 if (window.scrollY > 100) {
                     navbar.classList.add('scrolled');
                 } else {
                     navbar.classList.remove('scrolled');
                 }
-            });
+            }, 16); // ~60fps
+            
+            window.addEventListener('scroll', handleScroll, { passive: true });
         }
     }
     
@@ -469,7 +510,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const cards = document.querySelectorAll('.project-card, .skill-card');
         
         cards.forEach(card => {
-            card.addEventListener('mousemove', handleTilt);
+            const throttledTilt = throttle(handleTilt.bind(card), 16); // ~60fps
+            card.addEventListener('mousemove', throttledTilt, { passive: true });
             card.addEventListener('mouseleave', resetTilt);
         });
         
@@ -541,10 +583,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialize section highlighting based on scroll
     function initSectionHighlighting() {
-        const sections = document.querySelectorAll('.section');
-        const navLinks = document.querySelectorAll('.nav-menu a');
+        const sections = domCache.sections;
+        const navLinks = domCache.navLinks;
         
-        window.addEventListener('scroll', () => {
+        const handleSectionHighlight = throttle(() => {
             let current = '';
             
             sections.forEach(section => {
@@ -562,22 +604,26 @@ document.addEventListener('DOMContentLoaded', () => {
                     link.classList.add('active');
                 }
             });
-        });
+        }, 50); // Throttle to 20fps for less critical highlighting
+        
+        window.addEventListener('scroll', handleSectionHighlight, { passive: true });
     }
     
     // Initialize back to top button
     function initBackToTop() {
-        const backToTopButton = document.querySelector('.back-to-top');
+        const backToTopButton = domCache.backToTopButton;
         
         if (backToTopButton) {
-            // Show button when scrolled down
-            window.addEventListener('scroll', () => {
+            // Show button when scrolled down - throttled for better performance
+            const handleBackToTopScroll = throttle(() => {
                 if (window.pageYOffset > 300) {
                     backToTopButton.classList.add('visible');
                 } else {
                     backToTopButton.classList.remove('visible');
                 }
-            });
+            }, 100); // Throttle to 10fps for back-to-top visibility
+            
+            window.addEventListener('scroll', handleBackToTopScroll, { passive: true });
             
             // Scroll back to top when clicked
             backToTopButton.addEventListener('click', () => {
@@ -831,8 +877,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Create an array to store previous mouse positions for trail
         const mousePositions = [];
         
-        // Set up event listeners
-        document.addEventListener('mousemove', animateCursor);
+        // Set up event listeners with throttling for better performance
+        document.addEventListener('mousemove', throttle(animateCursor, 8), { passive: true }); // ~120fps
         document.addEventListener('mousedown', enlargeCursor);
         document.addEventListener('mouseup', resetCursor);
         document.addEventListener('mouseenter', showCursor);
@@ -1442,11 +1488,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 100 + (index * 100));
         });
         
-        // Add parallax scrolling effect
-        initParallaxEffect();
+        // Add parallax scrolling effect - deferred for better performance
+        setTimeout(() => {
+            initParallaxEffect();
+        }, 1000);
         
-        // Add interactive project card effects
-        initInteractiveCards();
+        // Add interactive project card effects - deferred
+        setTimeout(() => {
+            initInteractiveCards();
+        }, 1500);
     }
     
     // Initialize typing effect for hero section
@@ -1506,22 +1556,24 @@ document.addEventListener('DOMContentLoaded', () => {
     function initParallaxEffect() {
         if (isMobile) return; // Skip on mobile for performance
         
-        window.addEventListener('scroll', () => {
+        const handleParallaxScroll = throttle(() => {
             const scrolled = window.pageYOffset;
             const header = document.querySelector('header');
             const parallaxElements = document.querySelectorAll('.parallax-element');
             
-            // Parallax effect for header
+            // Parallax effect for header - use transform3d for better performance
             if (header) {
-                header.style.transform = `translateY(${scrolled * 0.5}px)`;
+                header.style.transform = `translate3d(0, ${scrolled * 0.5}px, 0)`;
             }
             
             // Parallax effect for other elements
             parallaxElements.forEach((element, index) => {
                 const speed = 0.1 + (index * 0.05);
-                element.style.transform = `translateY(${scrolled * speed}px)`;
+                element.style.transform = `translate3d(0, ${scrolled * speed}px, 0)`;
             });
-        });
+        }, 16); // 60fps for smooth parallax
+        
+        window.addEventListener('scroll', handleParallaxScroll, { passive: true });
     }
     
     // Initialize interactive card effects
@@ -1534,7 +1586,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
             });
             
-            card.addEventListener('mousemove', function(e) {
+            const throttledMouseMove = throttle(function(e) {
                 if (isMobile) return;
                 
                 const rect = this.getBoundingClientRect();
@@ -1561,7 +1613,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${shadowX}px ${shadowY}px 25px rgba(0, 0, 0, 0.2),
                     0 0 0 1px rgba(var(--accent-rgb), 0.1)
                 `;
-            });
+            }.bind(card), 16); // ~60fps
+            
+            card.addEventListener('mousemove', throttledMouseMove, { passive: true });
             
             card.addEventListener('mouseleave', function() {
                 this.style.transform = '';
