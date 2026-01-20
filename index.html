@@ -14,6 +14,8 @@
     <!-- Preconnect to critical external domains -->
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://github-readme-stats.vercel.app" crossorigin>
+    <link rel="preconnect" href="https://github-readme-streak-stats.herokuapp.com" crossorigin>
     
     <!-- Preload critical CSS -->
     <link rel="preload" href="styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -36,6 +38,8 @@
     <meta name="robots" content="index, follow">
     <meta name="language" content="English">
     <meta name="revisit-after" content="7 days">
+    <meta name="theme-color" content="#0a192f" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#f8f9fa" media="(prefers-color-scheme: light)">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="canonical" href="https://6639835.github.io/">
     
@@ -176,7 +180,7 @@
         </div>
     </section>
 
-    <section id="skills" class="section" role="main" aria-labelledby="skills-title">
+    <section id="skills" class="section" aria-labelledby="skills-title">
         <div class="container">
             <h2 id="skills-title" class="section-title">Technical Skills</h2>
             
@@ -324,7 +328,7 @@
         </div>
     </section>
 
-    <section id="projects" class="section" role="main" aria-labelledby="projects-title">
+    <section id="projects" class="section" aria-labelledby="projects-title">
         <div class="container">
             <h2 id="projects-title" class="section-title">Featured Projects</h2>
             
@@ -352,10 +356,10 @@
                         <div class="project-header">
                             <h3>VOR-FIX-CALCULATION ✈️</h3>
                             <div class="project-links">
-                                <a href="https://github.com/6639835" target="_blank" aria-label="View code on GitHub">
+                                <a href="https://github.com/6639835" target="_blank" rel="noopener noreferrer" aria-label="View code on GitHub">
                                     <i class="fab fa-github"></i>
                                 </a>
-                                <a href="#" target="_blank" aria-label="Visit live project">
+                                <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Visit live project">
                                     <i class="fas fa-external-link-alt"></i>
                                 </a>
                             </div>
@@ -389,10 +393,10 @@
                         <div class="project-header">
                             <h3>Interactive Data Dashboard 📊</h3>
                             <div class="project-links">
-                                <a href="https://github.com/6639835" target="_blank" aria-label="View code on GitHub">
+                                <a href="https://github.com/6639835" target="_blank" rel="noopener noreferrer" aria-label="View code on GitHub">
                                     <i class="fab fa-github"></i>
                                 </a>
-                                <a href="#" target="_blank" aria-label="Visit live project">
+                                <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Visit live project">
                                     <i class="fas fa-external-link-alt"></i>
                                 </a>
                             </div>
@@ -428,10 +432,10 @@
                         <div class="project-header">
                             <h3>Tech Blog Platform 📝</h3>
                             <div class="project-links">
-                                <a href="https://github.com/6639835" target="_blank" aria-label="View code on GitHub">
+                                <a href="https://github.com/6639835" target="_blank" rel="noopener noreferrer" aria-label="View code on GitHub">
                                     <i class="fab fa-github"></i>
                                 </a>
-                                <a href="#" target="_blank" aria-label="Visit live project">
+                                <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Visit live project">
                                     <i class="fas fa-external-link-alt"></i>
                                 </a>
                             </div>
@@ -452,7 +456,7 @@
             </div>
             
             <div class="section-cta">
-                <a href="https://github.com/6639835" target="_blank" class="secondary-btn">
+                <a href="https://github.com/6639835" target="_blank" rel="noopener noreferrer" class="secondary-btn">
                     <i class="fab fa-github"></i> View More on GitHub
                 </a>
             </div>
@@ -596,8 +600,8 @@
         <div class="container">
             <h2 class="section-title">GitHub Statistics</h2>
             <div class="github-stats">
-                <img src="https://github-readme-stats.vercel.app/api?username=6639835&show_icons=true&theme=dark" alt="GitHub Stats">
-                <img src="https://github-readme-streak-stats.herokuapp.com/?user=6639835&theme=dark" alt="GitHub Streak Stats">
+                <img src="https://github-readme-stats.vercel.app/api?username=6639835&show_icons=true&theme=dark" alt="GitHub Stats" loading="lazy" decoding="async">
+                <img src="https://github-readme-streak-stats.herokuapp.com/?user=6639835&theme=dark" alt="GitHub Streak Stats" loading="lazy" decoding="async">
             </div>
         </div>
     </section>
@@ -672,8 +676,8 @@
     <!-- Performance monitoring script -->
     <script>
         // Monitor Core Web Vitals
-        if ('web-vital' in window) {
-            import('https://unpkg.com/web-vitals').then(({getCLS, getFID, getFCP, getLCP, getTTFB}) => {
+        if ('PerformanceObserver' in window) {
+            import('https://unpkg.com/web-vitals@3/dist/web-vitals.attribution.js').then(({getCLS, getFID, getFCP, getLCP, getTTFB}) => {
                 getCLS(console.log);
                 getFID(console.log);
                 getFCP(console.log);

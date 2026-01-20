@@ -34,12 +34,19 @@ document.addEventListener('DOMContentLoaded', () => {
         body: document.body,
         documentElement: document.documentElement
     };
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const supportsHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
+    const scrollBehavior = prefersReducedMotion ? 'auto' : 'smooth';
     
     // Handle preloader
     const preloader = domCache.preloader;
     
     // Hide preloader after content loaded
     window.addEventListener('load', () => {
+        const preloaderDelay = prefersReducedMotion ? 0 : 500;
+        const animationsDelay = prefersReducedMotion ? 0 : 300;
         setTimeout(() => {
             preloader.classList.add('fade-out');
             document.body.style.overflow = 'visible'; // Enable scrolling
@@ -47,12 +54,12 @@ document.addEventListener('DOMContentLoaded', () => {
             // Start animations after preloader is gone
             setTimeout(() => {
                 initAnimations();
-            }, 300);
-        }, 500);
+            }, animationsDelay);
+        }, preloaderDelay);
     });
     
     // Detect mobile devices for better experience
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const isMobile = isCoarsePointer || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     
     if (isMobile) {
         // Remove particles.js on mobile for better performance
@@ -71,19 +78,25 @@ document.addEventListener('DOMContentLoaded', () => {
         initMobileOptimizations();
     } else {
         // Initialize particles on desktop only - delayed for better initial load
-        setTimeout(() => {
-            initializeParticles();
-        }, 1000);
+        if (!prefersReducedMotion) {
+            setTimeout(() => {
+                initializeParticles();
+            }, 1000);
+        }
         
         // Setup custom cursor on desktop - delayed
-        setTimeout(() => {
-            setupCustomCursor();
-        }, 1500);
+        if (!prefersReducedMotion && supportsHover) {
+            setTimeout(() => {
+                setupCustomCursor();
+            }, 1500);
+        }
         
         // Initialize tilt effects for cards on desktop - delayed
-        setTimeout(() => {
-            initTiltEffects();
-        }, 2000);
+        if (!prefersReducedMotion && supportsHover) {
+            setTimeout(() => {
+                initTiltEffects();
+            }, 2000);
+        }
     }
 
     // Add a loading animation while the page initializes
@@ -131,17 +144,25 @@ document.addEventListener('DOMContentLoaded', () => {
     initTestimonialsSlider();
     
     // Initialize project search - deferred for better performance
-    setTimeout(() => {
+    if (!prefersReducedMotion) {
+        setTimeout(() => {
+            initProjectSearch();
+        }, 2500);
+    } else {
         initProjectSearch();
-    }, 2500);
+    }
     
     // Initialize blog functionality - deferred
-    setTimeout(() => {
+    if (!prefersReducedMotion) {
+        setTimeout(() => {
+            initBlogFunctionality();
+        }, 3000);
+    } else {
         initBlogFunctionality();
-    }, 3000);
+    }
     
     // Initialize particles.js with enhanced configuration
-    if (typeof particlesJS !== 'undefined') {
+    if (!prefersReducedMotion && typeof particlesJS !== 'undefined') {
         const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
         const particleColor = currentTheme === 'dark' ? '#64ffda' : '#0a9e88';
         
@@ -233,8 +254,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function initMobileNav() {
         const navToggle = domCache.navToggle;
         const navMenu = domCache.navMenu;
+        const getToggleIcon = () => (navToggle ? navToggle.querySelector('i') : null);
         
-        if (navToggle) {
+        if (navToggle && navMenu) {
             navToggle.addEventListener('click', () => {
                 const isExpanded = navMenu.classList.contains('active');
                 navMenu.classList.toggle('active');
@@ -243,13 +265,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 navToggle.setAttribute('aria-expanded', !isExpanded);
                 
                 // Change icon
-                const icon = navToggle.querySelector('i');
-                if (navMenu.classList.contains('active')) {
-                    icon.classList.remove('fa-bars');
-                    icon.classList.add('fa-times');
-                } else {
-                    icon.classList.remove('fa-times');
-                    icon.classList.add('fa-bars');
+                const icon = getToggleIcon();
+                if (icon) {
+                    if (navMenu.classList.contains('active')) {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-times');
+                    } else {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
                 }
             });
         }
@@ -262,9 +286,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 navMenu.classList.remove('active');
                 
                 // Reset icon
-                const icon = navToggle.querySelector('i');
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
+                const icon = getToggleIcon();
+                if (icon) {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
             }
         });
         
@@ -277,9 +303,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     navMenu.classList.remove('active');
                     
                     // Reset icon
-                    const icon = navToggle.querySelector('i');
-                    icon.classList.remove('fa-times');
-                    icon.classList.add('fa-bars');
+                    const icon = getToggleIcon();
+                    if (icon) {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
                 }
                 
                 // Smooth scroll to section
@@ -291,7 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         const offsetTop = targetSection.offsetTop - 80; // Account for navbar height
                         window.scrollTo({
                             top: offsetTop,
-                            behavior: 'smooth'
+                            behavior: scrollBehavior
                         });
                     }
                 }
@@ -314,16 +342,20 @@ document.addEventListener('DOMContentLoaded', () => {
         if (themeToggle) {
             themeToggle.addEventListener('click', () => {
                 // Add transition class to body for smoother theme switching
-                domCache.documentElement.classList.add('theme-transition');
+                if (!prefersReducedMotion) {
+                    domCache.documentElement.classList.add('theme-transition');
+                }
                 
                 // Toggle theme
                 const currentTheme = domCache.documentElement.getAttribute('data-theme');
                 const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
                 
                 // Add visual effect for theme change
-                const ripple = document.createElement('span');
-                ripple.classList.add('theme-toggle-ripple');
-                themeToggle.appendChild(ripple);
+                const ripple = prefersReducedMotion ? null : document.createElement('span');
+                if (ripple) {
+                    ripple.classList.add('theme-toggle-ripple');
+                    themeToggle.appendChild(ripple);
+                }
                 
                 // Add transform origin based on theme
                 if (newTheme === 'light') {
@@ -333,10 +365,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 
                 // Animate the ripple
-                setTimeout(() => {
-                    ripple.style.transform = 'scale(150)';
-                    ripple.style.opacity = '0.3';
-                }, 10);
+                if (!prefersReducedMotion && ripple) {
+                    setTimeout(() => {
+                        ripple.style.transform = 'scale(150)';
+                        ripple.style.opacity = '0.3';
+                    }, 10);
+                }
                 
                 // Apply theme change
                 setTimeout(() => {
@@ -353,15 +387,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     
                     // Clean up the ripple effect
-                    setTimeout(() => {
-                        ripple.remove();
-                    }, 600);
+                    if (ripple) {
+                        setTimeout(() => {
+                            ripple.remove();
+                        }, 600);
+                    }
                 }, 300);
                 
                 // Remove transition class after theme change is complete
-                setTimeout(() => {
-                    domCache.documentElement.classList.remove('theme-transition');
-                }, 1000);
+                if (!prefersReducedMotion) {
+                    setTimeout(() => {
+                        domCache.documentElement.classList.remove('theme-transition');
+                    }, 1000);
+                }
             });
         }
         
@@ -421,6 +459,13 @@ document.addEventListener('DOMContentLoaded', () => {
         sections.forEach(section => {
             section.classList.add('section-hidden');
         });
+
+        if (prefersReducedMotion) {
+            sections.forEach(section => {
+                section.classList.add('section-visible');
+            });
+            return;
+        }
         
         const revealSection = function(entries, observer) {
             const [entry] = entries;
@@ -491,14 +536,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 const category = project.getAttribute('data-category');
                 
                 if (filter === 'all' || category.includes(filter)) {
-                    project.style.display = 'block';
-                    setTimeout(() => {
+                    project.style.display = 'flex';
+                    requestAnimationFrame(() => {
                         project.classList.remove('hidden');
-                    }, 10);
+                    });
                 } else {
-                    project.style.display = 'none';
+                    project.classList.add('hidden');
                     setTimeout(() => {
-                        project.classList.add('hidden');
+                        project.style.display = 'none';
                     }, 300);
                 }
             });
@@ -507,6 +552,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialize tilt effects for cards
     function initTiltEffects() {
+        if (prefersReducedMotion || !supportsHover) return;
         const cards = document.querySelectorAll('.project-card, .skill-card');
         
         cards.forEach(card => {
@@ -553,29 +599,15 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialize mobile optimizations
     function initMobileOptimizations() {
-        // Reduce animation intensity on mobile
-        const style = document.createElement('style');
-        style.innerHTML = `
-            @media (max-width: 768px) {
-                .skill-card:hover {
-                    transform: translateY(-5px);
-                }
-                .project-card:hover {
-                    transform: translateY(-5px);
-                }
-                .progress-value::after {
-                    animation: progressShine 4s infinite linear;
-                }
-            }
-        `;
-        document.head.appendChild(style);
-        
         // Enable lazy loading for images
         const images = document.querySelectorAll('img');
         if ('loading' in HTMLImageElement.prototype) {
             images.forEach(img => {
                 if (img.getAttribute('src') && !img.hasAttribute('loading')) {
                     img.setAttribute('loading', 'lazy');
+                }
+                if (!img.hasAttribute('decoding')) {
+                    img.setAttribute('decoding', 'async');
                 }
             });
         }
@@ -600,8 +632,10 @@ document.addEventListener('DOMContentLoaded', () => {
             
             navLinks.forEach(link => {
                 link.classList.remove('active');
+                link.removeAttribute('aria-current');
                 if (link.getAttribute('href') === `#${current}`) {
                     link.classList.add('active');
+                    link.setAttribute('aria-current', 'page');
                 }
             });
         }, 50); // Throttle to 20fps for less critical highlighting
@@ -627,7 +661,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Scroll back to top when clicked
             backToTopButton.addEventListener('click', () => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                window.scrollTo({ top: 0, behavior: scrollBehavior });
             });
         }
     }
@@ -845,6 +879,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialize custom cursor on desktop
     function setupCustomCursor() {
+        if (prefersReducedMotion || !supportsHover) return;
         const cursor = document.createElement('div');
         cursor.className = 'custom-cursor';
         
@@ -868,8 +903,8 @@ document.addEventListener('DOMContentLoaded', () => {
         cursor.appendChild(trailingDots);
         document.body.appendChild(cursor);
         
-        // Hide default cursor
-        document.body.style.cursor = 'none';
+        // Hide default cursor only when the custom cursor is active
+        document.body.classList.add('custom-cursor-active');
         
         let cursorVisible = true;
         let cursorEnlarged = false;
@@ -1097,9 +1132,10 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Create search input
         const searchInput = document.createElement('input');
-        searchInput.type = 'text';
+        searchInput.type = 'search';
         searchInput.className = 'project-search-input';
         searchInput.placeholder = 'Search projects...';
+        searchInput.setAttribute('aria-label', 'Search projects');
         
         // Create search icon
         const searchIcon = document.createElement('i');
@@ -1157,11 +1193,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!noResultsMsg) {
                     noResultsMsg = document.createElement('div');
                     noResultsMsg.className = 'no-results-message';
-                    noResultsMsg.innerHTML = `
-                        <i class="fas fa-search"></i>
-                        <p>No projects found matching "${searchTerm}"</p>
-                        <button class="clear-search-btn">Clear Search</button>
-                    `;
+                    const icon = document.createElement('i');
+                    icon.className = 'fas fa-search';
+                    const message = document.createElement('p');
+                    message.textContent = `No projects found matching "${searchTerm}"`;
+                    const clearButtonInline = document.createElement('button');
+                    clearButtonInline.className = 'clear-search-btn';
+                    clearButtonInline.textContent = 'Clear Search';
+                    noResultsMsg.appendChild(icon);
+                    noResultsMsg.appendChild(message);
+                    noResultsMsg.appendChild(clearButtonInline);
                     document.querySelector('.projects-grid').after(noResultsMsg);
                     
                     // Add event listener to the clear button
@@ -1170,7 +1211,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         searchInput.dispatchEvent(new Event('input'));
                     });
                 } else {
-                    noResultsMsg.querySelector('p').textContent = `No projects found matching "${searchTerm}"`;
+                    const message = noResultsMsg.querySelector('p');
+                    if (message) {
+                        message.textContent = `No projects found matching "${searchTerm}"`;
+                    }
                     noResultsMsg.style.display = 'flex';
                 }
             } else if (noResultsMsg) {
@@ -1218,7 +1262,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         function setupBlogButton(button) {
             // Update button to prevent default navigation
-            button.addEventListener('click', function(e) {
+            const handleClick = function(e) {
                 e.preventDefault();
                 
                 // Show loading state
@@ -1312,9 +1356,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     button.disabled = true;
                     button.style.opacity = '0.7';
                     button.style.cursor = 'default';
-                    button.removeEventListener('click', arguments.callee);
+                    button.removeEventListener('click', handleClick);
                 }, 1200);
-            });
+            };
+            button.addEventListener('click', handleClick);
         }
         
         function setupArticleLinks() {
@@ -1461,6 +1506,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function initAnimations() {
         // Initialize typing effect
         initTypingEffect();
+
+        if (prefersReducedMotion) {
+            const cards = document.querySelectorAll('.skill-card, .project-card');
+            cards.forEach(card => {
+                card.style.opacity = '1';
+                card.style.transform = 'none';
+                card.style.transition = 'none';
+            });
+            return;
+        }
         
         // Add a subtle entrance animation to skill cards
         const skillCards = document.querySelectorAll('.skill-card');
@@ -1516,6 +1571,12 @@ document.addEventListener('DOMContentLoaded', () => {
         let charIndex = 0;
         let isDeleting = false;
         let typingSpeed = 150;
+
+        if (prefersReducedMotion) {
+            typingElement.textContent = texts[0];
+            typingElement.style.borderRight = 'none';
+            return;
+        }
         
         function typeText() {
             const currentText = texts[textIndex];
@@ -1554,7 +1615,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialize parallax scrolling effect
     function initParallaxEffect() {
-        if (isMobile) return; // Skip on mobile for performance
+        if (isMobile || prefersReducedMotion) return; // Skip on mobile or reduced motion
         
         const handleParallaxScroll = throttle(() => {
             const scrolled = window.pageYOffset;
@@ -1578,6 +1639,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialize interactive card effects
     function initInteractiveCards() {
+        if (prefersReducedMotion || !supportsHover) return;
         const cards = document.querySelectorAll('.project-card, .skill-card, .blog-card');
         
         cards.forEach(card => {

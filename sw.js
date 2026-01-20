@@ -1,14 +1,19 @@
 // Service Worker for Portfolio Website
 // Version 1.0.0
 
-const CACHE_NAME = 'portfolio-v1.0.0';
+const CACHE_VERSION = 'v1.1.0';
+const STATIC_CACHE_NAME = `portfolio-static-${CACHE_VERSION}`;
+const RUNTIME_CACHE_NAME = `portfolio-runtime-${CACHE_VERSION}`;
 const STATIC_CACHE_URLS = [
     '/',
     '/index.html',
     '/styles.css',
     '/script.js',
     '/404.html',
-    '/favicon.ico',
+    '/favicon.ico'
+];
+
+const EXTERNAL_CACHE_URLS = [
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
     'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap',
     'https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js'
@@ -19,10 +24,16 @@ self.addEventListener('install', (event) => {
     console.log('Service Worker installing...');
     
     event.waitUntil(
-        caches.open(CACHE_NAME)
+        caches.open(STATIC_CACHE_NAME)
             .then((cache) => {
                 console.log('Cache opened');
-                return cache.addAll(STATIC_CACHE_URLS);
+                return cache.addAll(STATIC_CACHE_URLS).then(() => cache);
+            })
+            .then((cache) => {
+                const externalRequests = EXTERNAL_CACHE_URLS.map((url) => (
+                    cache.add(new Request(url, { mode: 'no-cors' }))
+                ));
+                return Promise.allSettled(externalRequests);
             })
             .then(() => {
                 console.log('All static assets cached');
@@ -43,7 +54,7 @@ self.addEventListener('activate', (event) => {
             .then((cacheNames) => {
                 return Promise.all(
                     cacheNames.map((cacheName) => {
-                        if (cacheName !== CACHE_NAME) {
+                        if (cacheName !== STATIC_CACHE_NAME && cacheName !== RUNTIME_CACHE_NAME) {
                             console.log('Deleting old cache:', cacheName);
                             return caches.delete(cacheName);
                         }
@@ -69,52 +80,53 @@ self.addEventListener('fetch', (event) => {
         return;
     }
     
-    event.respondWith(
-        caches.match(event.request)
-            .then((cachedResponse) => {
-                // Return cached version if available
-                if (cachedResponse) {
-                    return cachedResponse;
-                }
-                
-                // Otherwise fetch from network
-                return fetch(event.request)
-                    .then((response) => {
-                        // Don't cache non-successful responses
-                        if (!response || response.status !== 200 || response.type !== 'basic') {
-                            return response;
-                        }
-                        
-                        // Clone the response since it can only be consumed once
-                        const responseToCache = response.clone();
-                        
-                        // Cache successful responses for future use
-                        caches.open(CACHE_NAME)
-                            .then((cache) => {
-                                // Only cache same-origin requests and specific external resources
-                                if (event.request.url.startsWith(self.location.origin) ||
-                                    event.request.url.includes('cdnjs.cloudflare.com') ||
-                                    event.request.url.includes('fonts.googleapis.com') ||
-                                    event.request.url.includes('fonts.gstatic.com')) {
-                                    cache.put(event.request, responseToCache);
-                                }
-                            });
-                        
-                        return response;
-                    })
-                    .catch((error) => {
-                        console.error('Fetch failed:', error);
-                        
-                        // Return offline page for navigation requests
-                        if (event.request.mode === 'navigate') {
-                            return caches.match('/404.html');
-                        }
-                        
-                        throw error;
-                    });
-            })
-    );
+    const request = event.request;
+    const url = new URL(request.url);
+    const isHTMLRequest = request.mode === 'navigate' ||
+        (request.headers.get('accept') || '').includes('text/html');
+    const isSameOrigin = url.origin === self.location.origin;
+    
+    event.respondWith(isHTMLRequest ? networkFirst(request) : cacheFirst(request, isSameOrigin));
 });
+
+async function networkFirst(request) {
+    try {
+        const response = await fetch(request);
+        const cache = await caches.open(RUNTIME_CACHE_NAME);
+        cache.put(request, response.clone());
+        return response;
+    } catch (error) {
+        const cached = await caches.match(request);
+        if (cached) return cached;
+        return caches.match('/404.html');
+    }
+}
+
+async function cacheFirst(request, isSameOrigin) {
+    const cached = await caches.match(request);
+    if (cached) return cached;
+    
+    try {
+        const response = await fetch(request);
+        if (response && response.status === 200) {
+            const cache = await caches.open(RUNTIME_CACHE_NAME);
+            if (shouldCacheRequest(request, isSameOrigin)) {
+                cache.put(request, response.clone());
+            }
+        }
+        return response;
+    } catch (error) {
+        return cached;
+    }
+}
+
+function shouldCacheRequest(request, isSameOrigin) {
+    return isSameOrigin ||
+        request.url.includes('cdnjs.cloudflare.com') ||
+        request.url.includes('fonts.googleapis.com') ||
+        request.url.includes('fonts.gstatic.com') ||
+        request.url.includes('cdn.jsdelivr.net');
+}
 
 // Background Sync for form submissions
 self.addEventListener('sync', (event) => {

@@ -67,13 +67,16 @@ body {
     overflow-x: hidden;
     transition: background-color 0.3s ease, color 0.3s ease;
     scroll-behavior: smooth;
-    cursor: none;
 }
 
 @media (max-width: 768px) {
     body {
         cursor: auto;
     }
+}
+
+body.custom-cursor-active {
+    cursor: none;
 }
 
 .container {
@@ -87,6 +90,11 @@ a {
     text-decoration: none;
     color: var(--accent);
     transition: all 0.3s ease;
+}
+
+:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
 }
 
 ul {
@@ -1415,46 +1423,10 @@ footer {
     display: flex;
 }
 
-/* Custom Cursor */
-.custom-cursor {
-    position: fixed;
-    pointer-events: none;
-    z-index: 9999;
-    mix-blend-mode: difference;
-    transition: all 0.1s ease;
-}
-
-/* Hide custom cursor on mobile */
-@media (max-width: 768px) {
-    .cursor-ring, .trail-dot {
-        display: none;
-    }
-}
-
-/* Mobile device optimizations */
-.mobile-device {
-    cursor: auto !important;
-}
-
-.mobile-device .custom-cursor {
-    display: none !important;
-}
-
-.mobile-device .primary-btn, 
-.mobile-device .secondary-btn, 
-.mobile-device .submit-btn,
-.mobile-device .social-icon,
-.mobile-device .skill-card,
-.mobile-device .project-card {
-    transform: none !important;
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease !important;
-}
-
 /* Smooth Scrolling */
 html {
     scroll-behavior: smooth;
     scroll-padding-top: 80px; /* Account for fixed navbar */
-    cursor: none;
 }
 
 @media (max-width: 768px) {
@@ -3297,5 +3269,24 @@ html.theme-transition *:after {
     
     .cursor-ring, .trail-dot {
         display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    html {
+        scroll-behavior: auto;
+    }
+
+    .custom-cursor,
+    .cursor-ring,
+    .trail-dot {
+        display: none !important;
     }
 }
